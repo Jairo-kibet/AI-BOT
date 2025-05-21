@@ -426,3 +426,28 @@ body {
     padding-right: 1vw;
   }
 }
+
+
+.sidebar {
+        width: 280px;
+        height: 100vh;
+        background-color: #ffffff;
+        border-radius: 20px;
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        padding-top: 5px;
+    }
+    .sidebar .header-section { height: 50px; }
+    .sidebar .icon-box { color: #8d4eff; font-size: 18px; }
+    .sidebar .title-text { font-weight: 600; font-size: 14px; letter-spacing: 2px; color: #000; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .sidebar .new-chat-btn { background: linear-gradient(to right, #8661f9, #9f5afd); color: white; border-radius: 20px; font-size: 13px; padding: 6px 16px; border: none; }
+    .sidebar .search-btn { background-color: #000; color: white; width: 36px; height: 36px; border-radius: 50%; font-size: 14px; display: flex; align-items: center; justify-content: center; border: none; }
+    .sidebar .section-label { font-size: 11px; color: #999; text-transform: uppercase; font-weight: 500; letter-spacing: 0.5px; }
+    .sidebar .clear-link { font-size: 11px; color: #5a5af5; text-decoration: none; cursor: pointer; }
+    .conversation-list { margin-top: 8px; }
+    .conversation-item { background-color: transparent; padding: 8px 10px; font-size: 13px; color: #333; border-radius: 12px; margin-bottom: 6px; cursor: pointer; transition: background-color 0.2s ease; display: flex; align-items: center; }
+    .conversation-item:hover { background-color: #f5f5f5; }
+    .setting-btn { background-color: #f3f3f3; color: #333; font-size: 13px; font-weight: 500; border-radius: 15px; padding: 10px 12px; text-align: left; border: none; }
+    .setting-btn i { color: #555; font-size: 14px; margin-right: 5px; }
