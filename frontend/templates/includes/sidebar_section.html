@@ -17,13 +17,15 @@
         .sidebar {
         width: 280px;
         height: 100vh;
-        background-color: #ffffff;
-        border-radius: 20px;
-        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
+        background: linear-gradient(135deg, #fff 60%, #ede3ff 100%);
+        border-radius: 28px 0 32px 0 / 60px 0 60px 0; /* 3D effect */
+        box-shadow: 0px 8px 32px rgba(92, 59, 255, 0.13), 0 2px 8px rgba(0,0,0,0.10);
         overflow: hidden;
         display: flex;
         flex-direction: column;
         padding-top: 5px;
+        border-left: 4px solid #a45cff22;
+        border-bottom: 2px solid #a45cff11;
         }
 
         .sidebar .header-section {
@@ -46,12 +48,145 @@
         }
 
         .sidebar .new-chat-btn {
-        background: linear-gradient(to right, #8661f9, #9f5afd);
-        color: white;
-        border-radius: 20px;
-        font-size: 13px;
-        padding: 6px 16px;
+        background: linear-gradient(90deg, #a45cff 0%, #ff7e5f 100%);
+        color: #fff;
+        border-radius: 24px 8px 24px 8px / 32px 8px 32px 8px;
+        font-size: 15px;
+        padding: 8px 22px;
         border: none;
+        box-shadow: 0 4px 16px rgba(164, 92, 255, 0.13), 0 1.5px 4px rgba(255,126,95,0.10);
+        font-weight: 600;
+        letter-spacing: 1px;
+        transition: opacity 0.3s, visibility 0.3s, width 0.35s, padding 0.35s, border-radius 0.35s, background 0.2s, color 0.2s, font-size 0.2s;
+        position: relative;
+        overflow: hidden;
+    }
+    .sidebar .new-chat-btn:hover {
+        background: linear-gradient(90deg, #ff7e5f 0%, #a45cff 100%);
+        box-shadow: 0 8px 32px rgba(255,126,95,0.18), 0 2px 8px rgba(164,92,255,0.12);
+        filter: brightness(1.08);
+    }
+    .sidebar .new-chat-btn.shrink-btn {
+            width: 36px;
+            min-width: 36px;
+            max-width: 36px;
+            padding: 0;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: linear-gradient(90deg, #a45cff 0%, #ff7e5f 100%);
+            color: #fff;
+            font-size: 14px;
+            overflow: hidden;
+            text-align: center;
+            margin-right: 10px;
+        }
+        .sidebar .new-chat-btn.shrink-btn span {
+            display: none;
+        }
+        .sidebar .new-chat-btn .plus-sign {
+            display: none;
+        }
+        .sidebar .new-chat-btn.shrink-btn .plus-sign {
+            display: inline;
+        }
+
+        .sidebar .sidebar-options {
+            position: relative;
+        }
+        .sidebar .search-btn {
+            background-color: #000;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            transition: width 0.35s cubic-bezier(0.4,0,0.2,1), border-radius 0.35s, background 0.25s 0.15s; /* delay background change */
+            overflow: visible;
+            position: relative;
+            z-index: 2;
+            padding: 0;
+        }
+        .sidebar .search-btn.expanded {
+            width: 244px; /* 280px sidebar - 2*18px padding from .px-3 */
+            max-width: 100%;
+            border-radius: 18px;
+            background: linear-gradient(90deg, #f3ecfc 0%, #ede3ff 100%);
+            color: #222;
+            justify-content: flex-start;
+            padding-left: 0;
+            transition: width 0.35s cubic-bezier(0.4,0,0.2,1), border-radius 0.35s, background 0.25s;
+        }
+        .sidebar .search-btn i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 3;
+            pointer-events: none;
+        }
+        .sidebar .search-btn input {
+            width: 0;
+            opacity: 0;
+            border: none;
+            outline: none;
+            background: transparent;
+            color: #fff;
+            font-size: 14px;
+            margin-left: 36px;
+            transition: width 0.35s, opacity 0.25s;
+            padding: 0 8px;
+        }
+        .sidebar .search-btn.expanded input {
+            width: calc(100% - 48px);
+            opacity: 1;
+            color: #222;
+        }
+        .sidebar .search-btn.expanded i {
+            color: #5c3bff;
+            background: none;
+            -webkit-background-clip: initial;
+            -webkit-text-fill-color: initial;
+        }
+        .sidebar .new-chat-btn {
+            transition: opacity 0.3s, visibility 0.3s, width 0.35s, padding 0.35s, border-radius 0.35s, background 0.2s, color 0.2s, font-size 0.2s;
+            opacity: 1;
+            visibility: visible;
+            width: auto;
+            min-width: 44px;
+            max-width: 180px;
+            white-space: nowrap;
+        }
+        .sidebar .new-chat-btn.shrink-btn {
+            width: 44px;
+            min-width: 44px;
+            max-width: 44px;
+            padding: 0;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: linear-gradient(90deg, #a45cff 0%, #ff7e5f 100%);
+            color: #fff;
+            font-size: 22px;
+            overflow: hidden;
+            text-align: center;
+        }
+        .sidebar .new-chat-btn.shrink-btn span {
+            display: none;
+        }
+        .sidebar .new-chat-btn .plus-sign {
+            display: none;
+        }
+        .sidebar .new-chat-btn.shrink-btn .plus-sign {
+            display: inline;
         }
 
         .sidebar .search-btn {
@@ -121,7 +256,16 @@
         }
 
         .conversation-header {
-            
+            font-size: 12px;
+            font-weight: 600;
+            color: #5c3bff;
+            letter-spacing: 0.5px;
+            padding: 8px 0 8px 0;
+            border-top: 1.5px solid #ece6fa;
+            border-bottom: 1.5px solid #ece6fa;
+            background: linear-gradient(90deg, #f8f6ff 60%, #f3ecfc 100%);
+            margin-bottom: 8px;
+            margin-top: 8px;
         }
 
         .scrollable-conversations {
@@ -143,15 +287,136 @@
           background: transparent;
           border-radius: 8px;
         }
+        .starred-scrollable::-webkit-scrollbar {
+          width: 8px;
+          background: transparent;
+          border-radius: 8px;
+          position: absolute;
+          right: 0;
+        }
+        .starred-scrollable::-webkit-scrollbar-thumb {
+          background: #ffd966;
+          border-radius: 8px;
+        }
+        .starred-scrollable::-webkit-scrollbar-track {
+          background: transparent;
+          border-radius: 8px;
+          margin-top: 0px;
+        }
+        .starred-scrollable {
+          scrollbar-width: thin;
+          scrollbar-color: #ffd966 transparent;
+          padding-right: 2px;
+        }
+    .icon-gradient-btn {
+        background: #ffffff;        
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        transition: box-shadow 0.2s;
+        margin-bottom: 4px;
+        cursor: pointer;
+    }
+    .icon-gradient-btn:active {
+        box-shadow: 0 2px 8px rgba(134, 97, 249, 0.18), 0 1px 2px rgba(0,0,0,0.10);
+    }
+    .icon-gradient-btn i {
+        background: linear-gradient(90deg, #ff7e5f, #5c3bff 80%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        color: transparent;
+        letter-spacing: 1.5px;
+    }
+    .sidebar .sidebar-options .d-flex {
+        gap: 10px;
+    }
+    .sidebar .new-chat-btn.shrink-btn {
+        margin-right: 10px;
+    }
+
+    .starred-conversations-section {
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 280px;
+      z-index: 10;
+      transition: height 0.4s cubic-bezier(0.4,0,0.2,1), box-shadow 0.3s;
+      box-shadow: 0 -2px 16px rgba(92,59,255,0.07);
+      border-radius: 18px 18px 0 0;
+      cursor: pointer;
+      height: 56px;
+      overflow: hidden;
+    }
+    .starred-conversations-section.expanded {
+      height: 50vh;
+      min-height: 180px;
+      max-height: 60vh;
+      box-shadow: 0 -8px 32px rgba(92,59,255,0.13);
+      cursor: default;
+    }
+    .starred-conversations-section .conversations {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      max-height: 0;
+      overflow-y: hidden;
+    }
+    .starred-conversations-section.expanded .conversations {
+      opacity: 1;
+      pointer-events: auto;
+      max-height: calc(50vh - 56px - 32px); /* 50vh minus header and padding */
+      overflow-y: auto;
+      transition: opacity 0.3s 0.1s;
+    }
+    .starred-conversations-section.expanded .conversations::-webkit-scrollbar {
+      width: 8px;
+      background: transparent;
+      border-radius: 8px;
+    }
+    .starred-conversations-section.expanded .conversations::-webkit-scrollbar-thumb {
+      background:rgb(255, 198, 255);
+      border-radius: 8px;
+    }
+    .starred-conversations-section.expanded .conversations::-webkit-scrollbar-track {
+      background: transparent;
+      border-radius: 8px;
+    }
+    .starred-conversations-section.expanded .conversations {
+      scrollbar-width: thin;
+      scrollbar-color: rgb(255, 198, 255) transparent;
+      padding-right: 2px;
+    }
+    .starred-conversations-section .starred-header {
+      display: flex;
+      align-items: center;
+      height: 40px;
+      cursor: pointer;
+    }
+    .starred-conversations-section.expanded .starred-header {
+      cursor: pointer;
+    }
+    /* Update star icon color in conversation items */
+    .starred-conversations-section .bi-star-fill {
+      color: #FFD700 !important;
+    }
   </style>
-<div class="sidebar-header d-flex align-items-center gap-2 p-3">
-  <i class="fa-regular fa-window-restore purple-icon"></i>
-  <span class="sidebar-title">GALGOTIA's Ai-Bot</span>
+<div class="sidebar-header d-col align-items-center gap-2 p-3">
+    <div class="icon-gradient-btn" id="sidebarCloseBtn">
+        <i class="bi bi-window-sidebar"></i>
+    </div>
+    <div class="sidebar-title text-center"><span>GALGOTIA's</span> Ai-Bot</div>
 </div>
 <div class="sidebar-options px-3">
   <div class="d-flex align-items-center justify-content-between">
-    <button class="btn new-chat-btn">+ New Chat</button>
-    <button class="btn search-btn"><i class="fas fa-search"></i></button>
+    <button class="btn new-chat-btn"><span class="plus-sign">+</span> <span class="btn-label">New Chat</span></button>
+    <button class="btn search-btn" id="sidebarSearchBtn">
+      <i class="fas fa-search"></i>
+      <input type="text" class="form-control" placeholder="Search..." style="background:transparent; color:#fff;" />
+    </button>
   </div>
 </div>
 <div class="conversation-header px-3 mt-3 d-flex justify-content-between">
@@ -160,24 +425,115 @@
 </div>
 <div class="flex-grow-1 d-flex flex-column" style="min-height:0;">
   <div class="scrollable-conversations flex-grow-1 d-flex flex-column" style="overflow-y:auto; min-height:0;">
-    <div class="conversations px-3">
-      <div class="conversation-item">What is the admission process in...</div>
-      <div class="conversation-item">What is the faculty count and...</div>
-      <div class="conversation-item">How many course are there in...</div>
-      <div class="conversation-item">Are there any scholarships...</div>
-      <div class="conversation-item">What sports facilities are...</div>
-      <div class="conversation-item">What sports facilities are...</div>
-      <div class="conversation-item">Admission criteria for B'tech...</div>
-    </div>
-    <div class="last-7-days px-3 mt-2">Last 7 Days</div>
-    <div class="conversations px-3">
-      <div class="conversation-item">Where is your campus located ?</div>
-      <div class="conversation-item">Where is your campus located ?</div>
-      <div class="conversation-item">When does the new academic...</div>
+    <div class="conversations px-3 scrollable-conversations" style="min-height:0;">
+      <div class="conversation-item"><i class="bi bi-chat-square-dots" style="margin-right: 5px;"></i> What is the admission process in...</div>
+      <div class="conversation-item"><i class="bi bi-chat-square-dots" style="margin-right: 5px;"></i> What is the faculty count and...</div>
+      <div class="conversation-item"><i class="bi bi-chat-square-dots" style="margin-right: 5px;"></i> How many course are there in...</div>
+      <div class="conversation-item"><i class="bi bi-chat-square-dots" style="margin-right: 5px;"></i> Are there any scholarships...</div>
+      <div class="conversation-item"><i class="bi bi-chat-square-dots" style="margin-right: 5px;"></i> What sports facilities are...</div>
+      <div class="conversation-item"><i class="bi bi-chat-square-dots" style="margin-right: 5px;"></i> What sports facilities are...</div>
+      <div class="conversation-item"><i class="bi bi-chat-square-dots" style="margin-right: 5px;"></i> Admission criteria for B'tech...</div>
     </div>
   </div>
 </div>
-<div class="sidebar-footer mt-auto px-3 mb-3">
-  <button class="btn setting-btn w-100"><i class="fas fa-gear me-2"></i> Settings</button>
-  <button class="btn setting-btn w-100 mt-2"><i class="fas fa-user me-2"></i> User Name</button>
+<!-- Starred Conversations at the bottom -->
+<div class="starred-conversations-section px-3 pb-2 pt-2" id="starredSection" style="border-top:1.5px solid #ece6fa; background:linear-gradient(90deg,#f8f6ff 60%,#f3ecfc 100%);">
+  <div class="starred-header d-flex align-items-center mb-2" style="font-size:12px; font-weight:600; color:#ffb300;">
+    <i class="bi bi-arrow-up-short" style="font-size:18px; color:#5c3bff; margin-right:4px;"></i>
+    <span style="color:#5c3bff;">Starred Conversations</span>
+  </div>
+  <div class="conversations starred-scrollable scrollable-conversations">
+    <div class="conversation-item"><i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> Where is your campus located ?</div>
+    <div class="conversation-item"><i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> Where is your campus located ?</div>
+    <div class="conversation-item"><i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> When does the new academic...</div>
+    <div class="conversation-item"><i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> Where is your campus located ?</div>
+    <div class="conversation-item"><i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> Where is your campus located ?</div>
+    <div class="conversation-item"><i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> When does the new academic...</div>
+    <div class="conversation-item"><i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> Where is your campus located ?</div>
+    <div class="conversation-item"><i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> Where is your campus located ?</div>
+    <div class="conversation-item"><i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> When does the new academic...</div>
+  </div>
 </div>
+<div class="sidebar-footer mt-auto pb-2 px-3 mb-5">
+  <div class="user-profile-card d-flex align-items-center p-2 mb-3" style="background: linear-gradient(90deg,#f8f6ff 60%,#f3ecfc 100%); border-radius: 16px; box-shadow: 0 2px 8px rgba(92,59,255,0.07);">
+    <div class="user-avatar d-flex align-items-center justify-content-center me-2" style="width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,#ffd700 60%,#fffbe6 100%);">
+      <i class="bi bi-person-fill" style="font-size:20px;"></i>
+    </div>
+    <div class="user-info flex-grow-1">
+      <div class="user-name" style="font-weight:600; color:#5c3bff; font-size:15px; letter-spacing:0.5px;">User Name</div>
+    </div>
+    <button class="btn btn-sm btn-light ms-2" style="border-radius:12px; font-size:10px; color:#5c3bff; font-weight:400; box-shadow:0 1px 4px #a45cff11; transition:background 0.2s;">Edit</button>
+  </div>
+</div>
+<script>
+// Sidebar close button logic for sidebar_section.html
+// This script assumes the sidebar is in a parent with id 'sidebarPanel' and overlay with id 'sidebarOverlay'
+document.addEventListener('DOMContentLoaded', function() {
+    var closeBtn = document.getElementById('sidebarCloseBtn');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function() {
+            var sidebarPanel = window.parent.document.getElementById('sidebarPanel');
+            var sidebarOverlay = window.parent.document.getElementById('sidebarOverlay');
+            var mainContainer = window.parent.document.querySelector('.main-container');
+            var topLeftButtons = window.parent.document.querySelector('.top-left-buttons');
+            if (sidebarPanel && sidebarOverlay && mainContainer && topLeftButtons) {
+                sidebarPanel.classList.remove('sidebar-visible');
+                sidebarOverlay.classList.remove('sidebar-visible');
+                topLeftButtons.classList.remove('hide-buttons');
+                mainContainer.classList.remove('sidebar-open');
+                setTimeout(function() {
+                    sidebarPanel.style.display = 'none';
+                    sidebarOverlay.style.display = 'none';
+                }, 350);
+            }
+        });
+    }
+});
+// Sidebar search button expand/collapse logic
+(function() {
+    var searchBtn = document.getElementById('sidebarSearchBtn');
+    var newChatBtn = document.querySelector('.sidebar .new-chat-btn');
+    var searchInput = searchBtn ? searchBtn.querySelector('input') : null;
+    if (searchBtn && newChatBtn && searchInput) {
+        searchBtn.addEventListener('click', function(e) {
+            if (!searchBtn.classList.contains('expanded')) {
+                searchBtn.classList.add('expanded');
+                newChatBtn.classList.add('shrink-btn');
+                setTimeout(function() { searchInput.focus(); }, 350);
+                e.stopPropagation();
+            }
+        });
+        // Collapse search on blur or click outside
+        document.addEventListener('click', function(e) {
+            if (searchBtn.classList.contains('expanded') && !searchBtn.contains(e.target)) {
+                searchBtn.classList.remove('expanded');
+                newChatBtn.classList.remove('shrink-btn');
+            }
+        });
+        // Optional: collapse on pressing Escape
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                searchBtn.classList.remove('expanded');
+                newChatBtn.classList.remove('shrink-btn');
+            }
+        });
+    }
+})();
+// Starred conversations expand/collapse logic
+(function() {
+    var starredSection = document.getElementById('starredSection');
+    var starredHeader = starredSection ? starredSection.querySelector('.starred-header') : null;
+    if (starredSection && starredHeader) {
+        starredHeader.addEventListener('click', function(e) {
+            starredSection.classList.toggle('expanded');
+            e.stopPropagation();
+        });
+        // Optional: collapse if click outside
+        document.addEventListener('click', function(e) {
+            if (starredSection.classList.contains('expanded') && !starredSection.contains(e.target)) {
+                starredSection.classList.remove('expanded');
+            }
+        });
+    }
+})();
+</script>

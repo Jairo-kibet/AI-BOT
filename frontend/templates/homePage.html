@@ -14,6 +14,65 @@
             font-family: 'Inter', sans-serif;
             background-color: #f2f2f2;
         }
+        /* Sidebar transition styles */
+        #sidebarPanel {
+            transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.25s;
+            transform: translateX(-100%);
+            opacity: 0;
+            pointer-events: none;
+        }
+        #sidebarPanel.sidebar-visible {
+            transform: translateX(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+        #sidebarOverlay {
+            transition: background 0.3s;
+            background: transparent;
+        }
+        #sidebarOverlay.sidebar-visible {
+            background: rgba(0,0,0,0.12);
+        }
+        .top-left-buttons {
+            transition: opacity 0.3s, visibility 0.3s;
+            opacity: 1;
+            visibility: visible;
+        }
+        .top-left-buttons.hide-buttons {
+            opacity: 0;
+            visibility: hidden;
+        }
+        /* Slide main content when sidebar is open */
+        .main-container .center-text,
+        .main-container .cards-wrapper {
+            transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+        }
+        .main-container.sidebar-open .center-text,
+        .main-container.sidebar-open .cards-wrapper {
+            transform: translateX(140px); /* Move by half sidebar width */
+        }
+        .main-container .chat-input {
+            transition: left 0.35s cubic-bezier(0.4,0,0.2,1);
+        }
+        .main-container.sidebar-open .chat-input {
+            left: calc(50% + 70px); /* Move by half sidebar width */
+        }
+        @media (max-width: 900px) {
+            .main-container.sidebar-open .center-text,
+            .main-container.sidebar-open .cards-wrapper {
+                transform: none;
+            }
+            .main-container.sidebar-open .chat-input {
+                left: 50%;
+            }
+        }
+        /* Ensure chat-input stays centered in visible area */
+        .main-container.sidebar-open .chat-input {
+            left: calc(50% + 140px);
+        }
+        .main-container .chat-input {
+            transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), left 0.35s cubic-bezier(0.4,0,0.2,1);
+        }
 
         .main-container {
             padding: 30px 60px;
@@ -140,7 +199,7 @@
             margin-bottom: 40px;
         }
 
-        .center-text .tag {
+        .center-text .tag{
             background: white;
             display: inline-block;
             padding: 8px 20px;
@@ -549,15 +608,31 @@
     const sidebarToggle = document.getElementById('sidebarToggle');
     const sidebarPanel = document.getElementById('sidebarPanel');
     const sidebarOverlay = document.getElementById('sidebarOverlay');
+    const topLeftButtons = document.querySelector('.top-left-buttons');
+    const mainContainer = document.querySelector('.main-container');
 
-    sidebarToggle.addEventListener('click', function() {
+    function openSidebar() {
         sidebarPanel.style.display = 'block';
         sidebarOverlay.style.display = 'block';
-    });
-    sidebarOverlay.addEventListener('click', function() {
-        sidebarPanel.style.display = 'none';
-        sidebarOverlay.style.display = 'none';
-    });
+        setTimeout(() => {
+            sidebarPanel.classList.add('sidebar-visible');
+            sidebarOverlay.classList.add('sidebar-visible');
+            topLeftButtons.classList.add('hide-buttons');
+            mainContainer.classList.add('sidebar-open');
+        }, 10);
+    }
+    function closeSidebar() {
+        sidebarPanel.classList.remove('sidebar-visible');
+        sidebarOverlay.classList.remove('sidebar-visible');
+        topLeftButtons.classList.remove('hide-buttons');
+        mainContainer.classList.remove('sidebar-open');
+        setTimeout(() => {
+            sidebarPanel.style.display = 'none';
+            sidebarOverlay.style.display = 'none';
+        }, 350);
+    }
+    sidebarToggle.addEventListener('click', openSidebar);
+    sidebarOverlay.addEventListener('click', closeSidebar);
 </script>
 </body>
 </html>
