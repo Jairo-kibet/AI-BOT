@@ -21,3 +21,6 @@ def studentSignUp(request):
 
 def homepPage(request):
     return render(request, 'homePage.html')
+
+def chatIndex(request):
+    return render(request, 'chatIndex.html')
