@@ -383,22 +383,16 @@
                 height: 90px;
                 padding: 12px;
                 font-size: 12px;
+                background: #fff !important;
+                color: #111 !important;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+                border: 1px solid #eee;
             }
-            .info-card {
-                padding: 12px;
-                font-size: 12px;
-                min-width: 120px;
-                height: auto;
+            .feature-card h4, .feature-card p, .feature-card i {
+                color: #111 !important;
             }
-            .card-divider > div {
-                margin: 0 8px !important;
-                height: 32px !important;
-            }
-            .cards-wrapper {
-                gap: 10px;
-            }
-            .left-cards {
-                gap: 8px;
+            .card-divider, .right-cards {
+                display: none !important;
             }
         }
         @media (max-width: 500px) {
@@ -434,27 +428,6 @@
             }
             .feature-card h4 {
                 font-size: 11px;
-            }
-            .info-card {
-                padding: 6px;
-                font-size: 10px;
-                min-width: 80px;
-                max-width: 100%;
-                height: auto;
-            }
-            .chat-input {
-                width: 98vw;
-                min-width: 0;
-                padding: 6px 8px;
-                font-size: 12px;
-            }
-            .chat-input input {
-                font-size: 11px;
-                margin: 0 6px;
-            }
-            .chat-input button {
-                font-size: 12px;
-                padding: 7px 8px;
             }
         }
     </style>
