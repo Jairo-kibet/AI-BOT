@@ -132,25 +132,13 @@
     .regenerate-btn {
       border: none;
       outline: none;
-      font-size: 13px;
-      color: #444;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
       margin-left: auto;
-      padding: 6px 18px;
-      font-weight: 500;
-      box-shadow: 0 2px 8px rgba(80,80,120,0.13), 0 1.5px 4px rgba(80,80,120,0.10);
-      background: #fff;
-      border-radius: 25px;
-      transition: box-shadow 0.2s, background 0.2s;
     }
     .regenerate-btn:hover, .reaction-group:hover, .more-group:hover {
       box-shadow: 0 4px 16px rgba(80,80,120,0.18), 0 2px 8px rgba(80,80,120,0.13);
       background: #f6f6fb;
     }
-    .reaction-group i, .more-group i {
+    .reaction-group i, .more-group i, .regenerate-btn i {
       margin-right: 0;
       color: #888;
       cursor: pointer;
@@ -164,6 +152,13 @@
       background: none;
       border: none;
       box-shadow: none;
+    }
+    .regenerate-btn i {
+        font-size: 14.2px; 
+        padding: 2px 0;
+    }
+    .regenerate-btn i:hover {
+        color: #111;
     }
     .reaction-group i:hover, .more-group i:hover {
       color: #111;
@@ -239,14 +234,16 @@
       <div class="bot-actions">
         <div class="reaction-group">
           <i class="bi bi-hand-thumbs-up" title="like"></i>
+          <span style="margin: 0 6px; color: #bbb;">|</span>
           <i class="bi bi-hand-thumbs-down" title="dislike"></i>
+          <span style="margin: 0 6px; color: #bbb;">|</span>
           <i class="bi bi-clipboard" title="copy"></i>
         </div>
         <div class="more-group">
           <i class="bi bi-three-dots-vertical"></i>
         </div>
         <button class="regenerate-btn">
-          <i class="bi bi-arrow-repeat"></i> Regenerate
+          <i class="bi bi-arrow-repeat"> Regenerate</i> 
         </button>
       </div>
     </div>
@@ -275,9 +272,9 @@
         <div class="more-group">
           <i class="bi bi-three-dots-vertical"></i>
         </div>
-        <button class="regenerate-btn">
+        <div class="regenerate-btn">
           <i class="bi bi-arrow-repeat"></i> Regenerate
-        </button>
+        </div>
       </div>
     </div>
 

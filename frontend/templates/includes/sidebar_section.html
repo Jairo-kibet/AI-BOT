@@ -32,19 +32,53 @@
         height: 50px;
         }
 
-        .sidebar .icon-box {
-        color: #8d4eff;
-        font-size: 18px;
+        .sidebar-title {
+
         }
 
-        .sidebar .title-text {
-        font-weight: 600;
-        font-size: 14px;
-        letter-spacing: 2px;
-        color: #000;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        .sidebar-title .tag{
+            background: white;
+            display: inline-block;
+            padding: 8px 20px;
+            border: 1px solid #a45cff22;
+            border-radius: 20px;
+            font-weight: 600;
+            color: #222;
+            font-size: 15px;
+        }
+
+        .sidebar-title .tag span {
+            background: linear-gradient(90deg, #ff7e5f, #5c3bff 80%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 1.5px;
+        }
+
+        .icon-gradient-btn {
+            background: #ffffff;        
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            transition: box-shadow 0.2s;
+            margin-bottom: 4px;
+            cursor: pointer;
+            border-radius: 10px;
+        }
+        .icon-gradient-btn:active {
+            box-shadow: 0 2px 8px rgba(134, 97, 249, 0.18), 0 1px 2px rgba(0,0,0,0.10);
+        }
+        .icon-gradient-btn i {
+            background: linear-gradient(90deg, #ff7e5f, #5c3bff 80%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 1.5px;
         }
 
         .sidebar .new-chat-btn {
@@ -284,7 +318,7 @@
           border-radius: 8px;
         }
         .scrollable-conversations::-webkit-scrollbar-track {
-          background: transparent;
+          background:rgba(255, 255, 255, 0);
           border-radius: 8px;
         }
         .starred-scrollable::-webkit-scrollbar {
@@ -294,121 +328,74 @@
           position: absolute;
           right: 0;
         }
-        .starred-scrollable::-webkit-scrollbar-thumb {
-          background: #ffd966;
-          border-radius: 8px;
-        }
         .starred-scrollable::-webkit-scrollbar-track {
           background: transparent;
           border-radius: 8px;
           margin-top: 0px;
         }
-        .starred-scrollable {
-          scrollbar-width: thin;
-          scrollbar-color: #ffd966 transparent;
-          padding-right: 2px;
+        .starred-conversations-section {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 280px;
+        z-index: 10;
+        transition: height 0.5s cubic-bezier(0.4,0,0.2,1), box-shadow 0.3s;
+        box-shadow: 0 -2px 16px rgba(92,59,255,0.07);
+        border-radius: 18px 18px 0 0;
+        cursor: pointer;
+        height: 56px;
+        overflow: hidden;
+        background: linear-gradient(90deg,#f8f6ff 60%,#f3ecfc 100%);
         }
-    .icon-gradient-btn {
-        background: #ffffff;        
-        width: 44px;
-        height: 44px;
+        .starred-conversations-section.expanded {
+        height: 70vh;
+        min-height: 180px;
+        max-height: 80vh;
+        box-shadow: 0 -8px 32px rgba(92,59,255,0.13);
+        cursor: default;
+        }
+        .starred-conversations-section .conversations {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s, max-height 0.5s cubic-bezier(0.4,0,0.2,1);
+        max-height: 0;
+        overflow-y: hidden;
+        }
+        .starred-conversations-section.expanded .conversations {
+        opacity: 1;
+        pointer-events: auto;
+        max-height: calc(70vh - 56px - 32px); /* 70vh minus header and padding */
+        overflow-y: auto;
+        transition: opacity 0.3s, max-height 0.5s cubic-bezier(0.4,0,0.2,1);
+        }
+        .starred-conversations-section .starred-header {
         display: flex;
         align-items: center;
-        justify-content: center;
-        font-size: 22px;
-        transition: box-shadow 0.2s;
-        margin-bottom: 4px;
+        height: 40px;
         cursor: pointer;
-    }
-    .icon-gradient-btn:active {
-        box-shadow: 0 2px 8px rgba(134, 97, 249, 0.18), 0 1px 2px rgba(0,0,0,0.10);
-    }
-    .icon-gradient-btn i {
-        background: linear-gradient(90deg, #ff7e5f, #5c3bff 80%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        color: transparent;
-        letter-spacing: 1.5px;
-    }
-    .sidebar .sidebar-options .d-flex {
-        gap: 10px;
-    }
-    .sidebar .new-chat-btn.shrink-btn {
-        margin-right: 10px;
-    }
-
-    .starred-conversations-section {
-      position: fixed;
-      left: 0;
-      bottom: 0;
-      width: 280px;
-      z-index: 10;
-      transition: height 0.4s cubic-bezier(0.4,0,0.2,1), box-shadow 0.3s;
-      box-shadow: 0 -2px 16px rgba(92,59,255,0.07);
-      border-radius: 18px 18px 0 0;
-      cursor: pointer;
-      height: 56px;
-      overflow: hidden;
-    }
-    .starred-conversations-section.expanded {
-      height: 50vh;
-      min-height: 180px;
-      max-height: 60vh;
-      box-shadow: 0 -8px 32px rgba(92,59,255,0.13);
-      cursor: default;
-    }
-    .starred-conversations-section .conversations {
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s;
-      max-height: 0;
-      overflow-y: hidden;
-    }
-    .starred-conversations-section.expanded .conversations {
-      opacity: 1;
-      pointer-events: auto;
-      max-height: calc(50vh - 56px - 32px); /* 50vh minus header and padding */
-      overflow-y: auto;
-      transition: opacity 0.3s 0.1s;
-    }
-    .starred-conversations-section.expanded .conversations::-webkit-scrollbar {
-      width: 8px;
-      background: transparent;
-      border-radius: 8px;
-    }
-    .starred-conversations-section.expanded .conversations::-webkit-scrollbar-thumb {
-      background:rgb(255, 198, 255);
-      border-radius: 8px;
-    }
-    .starred-conversations-section.expanded .conversations::-webkit-scrollbar-track {
-      background: transparent;
-      border-radius: 8px;
-    }
-    .starred-conversations-section.expanded .conversations {
-      scrollbar-width: thin;
-      scrollbar-color: rgb(255, 198, 255) transparent;
-      padding-right: 2px;
-    }
-    .starred-conversations-section .starred-header {
-      display: flex;
-      align-items: center;
-      height: 40px;
-      cursor: pointer;
-    }
-    .starred-conversations-section.expanded .starred-header {
-      cursor: pointer;
-    }
-    /* Update star icon color in conversation items */
-    .starred-conversations-section .bi-star-fill {
-      color: #FFD700 !important;
-    }
+        }
+        .starred-conversations-section.expanded .starred-header {
+        cursor: pointer;
+        }
+        .starred-conversations-section .starred-header .bi-arrow-up-short {
+          transition: transform 0.5ms cubic-bezier(0.4,0,0.2,1);
+          transition-delay: 0ms;
+        }
+        .starred-conversations-section.expanded .starred-header .bi-arrow-up-short {
+          transform: rotate(180deg);
+        }
+        /* Update star icon color in conversation items */
+        .starred-conversations-section .bi-star-fill {
+        color: #FFD700 !important;
+        }
   </style>
 <div class="sidebar-header d-col align-items-center gap-2 p-3">
     <div class="icon-gradient-btn" id="sidebarCloseBtn">
         <i class="bi bi-window-sidebar"></i>
     </div>
-    <div class="sidebar-title text-center"><span>GALGOTIA's</span> Ai-Bot</div>
+    <div class="sidebar-title d-flex flex-column align-items-center">
+        <div class="tag"><span>GALGOTIA’s</span> Ai-Bot</div>
+    </div>
 </div>
 <div class="sidebar-options px-3">
   <div class="d-flex align-items-center justify-content-between">
@@ -433,16 +420,31 @@
       <div class="conversation-item"><i class="bi bi-chat-square-dots" style="margin-right: 5px;"></i> What sports facilities are...</div>
       <div class="conversation-item"><i class="bi bi-chat-square-dots" style="margin-right: 5px;"></i> What sports facilities are...</div>
       <div class="conversation-item"><i class="bi bi-chat-square-dots" style="margin-right: 5px;"></i> Admission criteria for B'tech...</div>
+      <div class="conversation-item"><i class="bi bi-chat-square-dots" style="margin-right: 5px;"></i> Are there any scholarships...</div>
+      <div class="conversation-item"><i class="bi bi-chat-square-dots" style="margin-right: 5px;"></i> What sports facilities are...</div>
+      <div class="conversation-item"><i class="bi bi-chat-square-dots" style="margin-right: 5px;"></i> What sports facilities are...</div>
+      <div class="conversation-item"><i class="bi bi-chat-square-dots" style="margin-right: 5px;"></i> Admission criteria for B'tech...</div>
+      <div class="conversation-item"><i class="bi bi-chat-square-dots" style="margin-right: 5px;"></i> Are there any scholarships...</div>
+      <div class="conversation-item"><i class="bi bi-chat-square-dots" style="margin-right: 5px;"></i> What sports facilities are...</div>
+      <div class="conversation-item"><i class="bi bi-chat-square-dots" style="margin-right: 5px;"></i> What sports facilities are...</div>
+      <div class="conversation-item"><i class="bi bi-chat-square-dots" style="margin-right: 5px;"></i> Admission criteria for B'tech...</div>
     </div>
   </div>
 </div>
 <!-- Starred Conversations at the bottom -->
-<div class="starred-conversations-section px-3 pb-2 pt-2" id="starredSection" style="border-top:1.5px solid #ece6fa; background:linear-gradient(90deg,#f8f6ff 60%,#f3ecfc 100%);">
-  <div class="starred-header d-flex align-items-center mb-2" style="font-size:12px; font-weight:600; color:#ffb300;">
-    <i class="bi bi-arrow-up-short" style="font-size:18px; color:#5c3bff; margin-right:4px;"></i>
-    <span style="color:#5c3bff;">Starred Conversations</span>
+<div class="starred-conversations-section pb-2 pt-2" id="starredSection" style="border-top:1.5px solid #ece6fa; background:linear-gradient(90deg,#f8f6ff 60%,#f3ecfc 100%);">
+  <div class="starred-header px-3 d-flex align-items-center mb-2" style="font-size:12px; font-weight:600; color:#ffb300;">
+      <span style="color:#5c3bff;">Starred Conversations</span>
+      <i class="bi bi-arrow-up-short ms-auto" style="font-size:18px; color:#5c3bff; margin-right:4px;"></i>
   </div>
-  <div class="conversations starred-scrollable scrollable-conversations">
+  <div class="conversations px-3 starred-scrollable scrollable-conversations">
+    <div class="conversation-item"><i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> Where is your campus located ?</div>
+    <div class="conversation-item"><i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> Where is your campus located ?</div>
+    <div class="conversation-item"><i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> When does the new academic...</div>
+    <div class="conversation-item"><i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> Where is your campus located ?</div>
+    <div class="conversation-item"><i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> Where is your campus located ?</div>
+    <div class="conversation-item"><i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> When does the new academic...</div>
+    <div class="conversation-item"><i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> Where is your campus located ?</div>
     <div class="conversation-item"><i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> Where is your campus located ?</div>
     <div class="conversation-item"><i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> Where is your campus located ?</div>
     <div class="conversation-item"><i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> When does the new academic...</div>
@@ -454,86 +456,17 @@
     <div class="conversation-item"><i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> When does the new academic...</div>
   </div>
 </div>
-<div class="sidebar-footer mt-auto pb-2 px-3 mb-5">
-  <div class="user-profile-card d-flex align-items-center p-2 mb-3" style="background: linear-gradient(90deg,#f8f6ff 60%,#f3ecfc 100%); border-radius: 16px; box-shadow: 0 2px 8px rgba(92,59,255,0.07);">
-    <div class="user-avatar d-flex align-items-center justify-content-center me-2" style="width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,#ffd700 60%,#fffbe6 100%);">
-      <i class="bi bi-person-fill" style="font-size:20px;"></i>
+<div class="sidebar-footer mt-auto pb-2 mb-5" style="background: linear-gradient(90deg,#f8f6ff 60%,#f3ecfc 100%);">
+  <div class="user-profile-card d-flex align-items-center" style="background: linear-gradient(90deg,#f8f6ff 60%,#f3ecfc 100%); border-radius: 16px; border: 1px solid rgba(164, 92, 255, 0.13);">
+    <div class="user-avatar d-flex align-items-center justify-content-center me-2" style="width:40px; height:40px; border-radius:50%;">
+      <i class="bi bi-person" style="font-size:16px; color:#5c3bff;"></i>
     </div>
     <div class="user-info flex-grow-1">
-      <div class="user-name" style="font-weight:600; color:#5c3bff; font-size:15px; letter-spacing:0.5px;">User Name</div>
+      <div class="user-name" style="font-weight:600; color:#5c3bff; font-size:12px; letter-spacing:0.5px;">User Name</div>
     </div>
-    <button class="btn btn-sm btn-light ms-2" style="border-radius:12px; font-size:10px; color:#5c3bff; font-weight:400; box-shadow:0 1px 4px #a45cff11; transition:background 0.2s;">Edit</button>
+    <button class="btn btn-sm btn-transparent" style="color:#5c3bff; margin-right: 10px;"><i class="bi bi-pencil"></i></button>
   </div>
 </div>
 <script>
-// Sidebar close button logic for sidebar_section.html
-// This script assumes the sidebar is in a parent with id 'sidebarPanel' and overlay with id 'sidebarOverlay'
-document.addEventListener('DOMContentLoaded', function() {
-    var closeBtn = document.getElementById('sidebarCloseBtn');
-    if (closeBtn) {
-        closeBtn.addEventListener('click', function() {
-            var sidebarPanel = window.parent.document.getElementById('sidebarPanel');
-            var sidebarOverlay = window.parent.document.getElementById('sidebarOverlay');
-            var mainContainer = window.parent.document.querySelector('.main-container');
-            var topLeftButtons = window.parent.document.querySelector('.top-left-buttons');
-            if (sidebarPanel && sidebarOverlay && mainContainer && topLeftButtons) {
-                sidebarPanel.classList.remove('sidebar-visible');
-                sidebarOverlay.classList.remove('sidebar-visible');
-                topLeftButtons.classList.remove('hide-buttons');
-                mainContainer.classList.remove('sidebar-open');
-                setTimeout(function() {
-                    sidebarPanel.style.display = 'none';
-                    sidebarOverlay.style.display = 'none';
-                }, 350);
-            }
-        });
-    }
-});
-// Sidebar search button expand/collapse logic
-(function() {
-    var searchBtn = document.getElementById('sidebarSearchBtn');
-    var newChatBtn = document.querySelector('.sidebar .new-chat-btn');
-    var searchInput = searchBtn ? searchBtn.querySelector('input') : null;
-    if (searchBtn && newChatBtn && searchInput) {
-        searchBtn.addEventListener('click', function(e) {
-            if (!searchBtn.classList.contains('expanded')) {
-                searchBtn.classList.add('expanded');
-                newChatBtn.classList.add('shrink-btn');
-                setTimeout(function() { searchInput.focus(); }, 350);
-                e.stopPropagation();
-            }
-        });
-        // Collapse search on blur or click outside
-        document.addEventListener('click', function(e) {
-            if (searchBtn.classList.contains('expanded') && !searchBtn.contains(e.target)) {
-                searchBtn.classList.remove('expanded');
-                newChatBtn.classList.remove('shrink-btn');
-            }
-        });
-        // Optional: collapse on pressing Escape
-        searchInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                searchBtn.classList.remove('expanded');
-                newChatBtn.classList.remove('shrink-btn');
-            }
-        });
-    }
-})();
-// Starred conversations expand/collapse logic
-(function() {
-    var starredSection = document.getElementById('starredSection');
-    var starredHeader = starredSection ? starredSection.querySelector('.starred-header') : null;
-    if (starredSection && starredHeader) {
-        starredHeader.addEventListener('click', function(e) {
-            starredSection.classList.toggle('expanded');
-            e.stopPropagation();
-        });
-        // Optional: collapse if click outside
-        document.addEventListener('click', function(e) {
-            if (starredSection.classList.contains('expanded') && !starredSection.contains(e.target)) {
-                starredSection.classList.remove('expanded');
-            }
-        });
-    }
-})();
+
 </script>

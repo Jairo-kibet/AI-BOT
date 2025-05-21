@@ -512,7 +512,7 @@
     <div class="login-banner">Log in as student</div>
 
     <div class="center-text">
-        <div class="tag"><span>GALGOTIA’s</span> Ai-Bot</div>
+        <div class="tag"  id="centerTextTag"><span>GALGOTIA’s</span> Ai-Bot</div>
         <h1>Good day! How may i assist you ?</h1>
     </div>
 
@@ -604,35 +604,8 @@
         <button>&#10148;</button>
     </div>
 </div>
-<script>
-    const sidebarToggle = document.getElementById('sidebarToggle');
-    const sidebarPanel = document.getElementById('sidebarPanel');
-    const sidebarOverlay = document.getElementById('sidebarOverlay');
-    const topLeftButtons = document.querySelector('.top-left-buttons');
-    const mainContainer = document.querySelector('.main-container');
-
-    function openSidebar() {
-        sidebarPanel.style.display = 'block';
-        sidebarOverlay.style.display = 'block';
-        setTimeout(() => {
-            sidebarPanel.classList.add('sidebar-visible');
-            sidebarOverlay.classList.add('sidebar-visible');
-            topLeftButtons.classList.add('hide-buttons');
-            mainContainer.classList.add('sidebar-open');
-        }, 10);
-    }
-    function closeSidebar() {
-        sidebarPanel.classList.remove('sidebar-visible');
-        sidebarOverlay.classList.remove('sidebar-visible');
-        topLeftButtons.classList.remove('hide-buttons');
-        mainContainer.classList.remove('sidebar-open');
-        setTimeout(() => {
-            sidebarPanel.style.display = 'none';
-            sidebarOverlay.style.display = 'none';
-        }, 350);
-    }
-    sidebarToggle.addEventListener('click', openSidebar);
-    sidebarOverlay.addEventListener('click', closeSidebar);
+<script src="{% static 'js/scripts.js' %}">
+    
 </script>
 </body>
 </html>
