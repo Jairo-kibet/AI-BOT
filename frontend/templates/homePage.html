@@ -366,7 +366,25 @@
     </style>
     <style>
         /* Responsive Design */
-        @media (max-width: 1200px) {
+        @media screen and (min-width: 900px) and (max-width: 1200px) {
+            .feature-card {
+                max-width: 240px;
+            }
+            .cards-wrapper {
+                gap: 30px;
+            }
+            .cards-viewer {
+                flex-direction: column;
+                align-items: center;
+            }
+            .center-text {
+                margin-top: 10%;
+            }
+            .left-cards {
+                gap: 16px;
+            }
+        }
+        @media (max-width: 900px) {
             .main-container {
                 padding: 20px 10px;
             }
@@ -375,9 +393,14 @@
             }
             .right-cards {
                 gap: 10px;
+                max-width: 250px;
+            }
+            .cards-viewer {
+                flex-direction: column;
+                align-items: center;
             }
         }
-        @media (max-width: 900px) {
+        @media screen and (min-width: 800px) and (max-width: 900px) {
             .main-container {
                 padding: 10px 2vw;
             }
@@ -385,6 +408,9 @@
                 flex-direction: column;
                 align-items: center;
                 gap: 24px;
+            }
+            .center-text {
+                margin-top: 10%;
             }
             .left-cards {
                 gap: 16px;
@@ -401,8 +427,8 @@
                 width: 100%;
             }
             .feature-card {
-                width: 110px;
-                height: 110px;
+                width: 200px;
+                height: auto;
                 font-size: 14px;
             }
             .login-banner {
@@ -410,25 +436,63 @@
                 font-size: 13px;
                 padding: 7px;
             }
+            .cards-viewer {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+        @media screen and (min-width: 700px) and (max-width: 800px) {
+            .main-container {
+                padding: 0 0 20px 0;
+            }
+            .top-left-buttons {
+                top: 2.5%;
+                left: 2%;
+            }
+            .center-text {
+                margin-top: 10%;
+            }
+            .top-right-share {
+                top: 2.5%;
+                right: 10px;
+                padding: 7px 12px;
+                font-size: 12px;
+            }
+            .login-banner {
+                top: 20%;
+                font-size: 12px;
+                padding: 5px;
+            }
+            .center-text h1 {
+                font-size: 18px;
+            }
+            .cards-viewer {
+                flex-direction: column;
+                align-items: center;
+            }
         }
         @media (max-width: 700px) {
             .main-container {
                 padding: 0 0 40px 0;
             }
             .top-left-buttons {
-                top: 10px;
-                left: 10px;
+                top: 2.5;
+                left: 2.5%;
             }
             .top-right-share {
-                top: 10px;
-                right: 10px;
+                top: 2.5%;
+                right: 2.5%;
                 padding: 7px 12px;
                 font-size: 12px;
             }
             .login-banner {
-                top: 5%;
+                top: 20%;
                 font-size: 12px;
                 padding: 5px;
+            }
+            .center-text {
+                margin-top: 10%;
+                font-size: 14px;
             }
             .center-text h1 {
                 font-size: 18px;
@@ -438,8 +502,8 @@
                 padding: 6px 12px;
             }
             .feature-card {
-                width: 90px;
-                height: 90px;
+                width: 200px;
+                height: auto;
                 padding: 12px;
                 font-size: 12px;
                 background: #fff !important;
@@ -454,14 +518,16 @@
                 display: none !important;
             }
         }
-        @media (max-width: 500px) {
+        @media (max-width: 400px) {
+            .center-text {
+                margin-top: 30%;
+                font-size: 12px;
+            }
+        }
+
+        @media screen and (min-width: 400px) and (max-width: 500px) {
             .main-container {
                 padding: 0 0 20px 0;
-            }
-            .top-left-buttons button {
-                width: 32px;
-                height: 32px;
-                font-size: 13px;
             }
             .top-right-share {
                 font-size: 10px;
@@ -472,17 +538,18 @@
                 padding: 3px;
                 border-radius: 8px 0 0 8px;
             }
-            .center-text h1 {
-                font-size: 14px;
+            .center-text {
+                font-size: 18px;
+                margin-top: 18%;
             }
             .center-text .tag {
-                font-size: 10px;
+                font-size: 14px;
                 padding: 4px 8px;
             }
             .feature-card {
-                width: 60px;
-                height: 60px;
-                padding: 6px;
+                width: 120px;
+                height: auto;
+                padding: 8px;
                 font-size: 10px;
             }
             .feature-card h4 {
@@ -518,7 +585,7 @@
 
     <div class="cards-wrapper">
         <div class="left-cards">
-            <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
+            <div class="cards-viewer" style="display: flex; justify-content: center; align-items: center; width: 100%;">
                 <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; width: 100%;">
                     <div class="feature-card">
                         <div>
@@ -544,7 +611,7 @@
                     </div>
                 </div>
             </div>
-            <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
+            <div class="cards-viewer" style="display: flex; justify-content: center; align-items: center; width: 100%;">
                 <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; width: 100%;">
                     <div class="feature-card">
                         <div>
@@ -570,7 +637,7 @@
                     </div>
                 </div>
             </div>
-            <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
+            <div class="cards-viewer" style="display: flex; justify-content: center; align-items: center; width: 100%;">
                 <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; width: 100%;">
                     <div class="feature-card">
                         <div>
