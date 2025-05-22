@@ -44,12 +44,22 @@ def session_exit(request):
     return redirect('login')
 
 def studentSignUp(request):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        student = True
+        if User.objects.filter(userEmail=username).exists():
+            return render(request, "studentSignUp.html", {"error": "User already exists."})
+        hashed_password = make_password(password)
+        user = User(userEmail=username, userPassword=hashed_password, userType="student")
+        user.save()
+        return redirect('login')
     return render(request, 'studentSignUp.html')
 
 def homepPage(request):
     if 'user_id' in request.session:
         user_id = request.session['user_id']
-        user=User.objects.get(userId=user_id)
+        user = User.objects.get(userId=user_id)
         chat_conversations = ChatHistory.objects.filter(userId=user).order_by('-date_created')
         starred_chats = starredChat.objects.filter(userId=user).order_by('-date_created')
 
@@ -59,7 +69,7 @@ def homepPage(request):
             chat_conversations = ChatHistory.objects.filter(userId=user).order_by('-date_created')
         if not starred_chats.exists():
             starred_chats = None
-        return render(request, "homePage.html", {"username": user.userEmail, "chat_conversations": chat_conversations, "starred_chats": starred_chats})
+        return render(request, "homePage.html", {"username": user, "chat_conversations": chat_conversations, "starred_chats": starred_chats})
     else:
         return redirect('login')
     

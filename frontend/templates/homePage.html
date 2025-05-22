@@ -632,7 +632,11 @@
 
     <div class="top-right-share">Share</div>
 
-    <div class="login-banner">Log in as student</div>
+    {% if user.is_authenticated or username.userType == "student" %}
+    <div class="login-banner" style="display: none;"><a href="{% url 'studentregister' %}" style="text-decoration: none; color: #fff;">Log in as student</a></div>
+    {% else %}
+    <div class="login-banner"><a href="{% url 'studentregister' %}" style="text-decoration: none; color: #fff;">Log in as student</a></div>
+    {% endif %}
 
     <div id="mainContentArea">
         <div class="center-text" id="centerTextSection">

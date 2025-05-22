@@ -9,11 +9,29 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* ...existing code from homePage.html <style> blocks... */
         body {
             margin: 0;
             font-family: 'Inter', sans-serif;
             background-color: #f2f2f2;
+        }
+        /* Sidebar transition styles */
+        #sidebarPanel {
+            transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.25s;
+            transform: translateX(-100%);
+            opacity: 0;
+            pointer-events: none;
+        }
+        #sidebarPanel.sidebar-visible {
+            transform: translateX(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+        #sidebarOverlay {
+            transition: background 0.3s;
+            background: transparent;
+        }
+        #sidebarOverlay.sidebar-visible {
+            background: rgba(0,0,0,0.12);
         }
         .top-left-buttons {
             transition: opacity 0.3s, visibility 0.3s;
@@ -24,17 +42,43 @@
             opacity: 0;
             visibility: hidden;
         }
-        
+        /* Slide main content when sidebar is open */
+        .main-container .center-text,
+        .main-container .cards-wrapper {
+            transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+        }
+        .main-container.sidebar-open .center-text,
+        .main-container.sidebar-open .cards-wrapper {
+            transform: translateX(140px); /* Move by half sidebar width */
+        }
+        .main-container .chat-input {
+            transition: left 0.35s cubic-bezier(0.4,0,0.2,1);
+        }
+        .main-container.sidebar-open .chat-input {
+            left: calc(50% + 70px); /* Move by half sidebar width */
+        }
+        @media (max-width: 900px) {
+            .main-container.sidebar-open .center-text,
+            .main-container.sidebar-open .cards-wrapper {
+                transform: none;
+            }
+            .main-container.sidebar-open .chat-input {
+                left: 50%;
+            }
+        }
+        /* Ensure chat-input stays centered in visible area */
         .main-container.sidebar-open .chat-input {
             left: calc(50% + 140px);
         }
         .main-container .chat-input {
             transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), left 0.35s cubic-bezier(0.4,0,0.2,1);
         }
+
         .main-container {
             padding: 30px 60px;
             position: relative;
         }
+
         .top-left-buttons {
             position: fixed;
             top: 20px;
@@ -43,6 +87,7 @@
             gap: 10px;
             z-index: 102;
         }
+
         .top-left-buttons button {
             width: 40px;
             height: 40px;
@@ -53,9 +98,11 @@
             font-size: 16px;
             color: #a45cff;
         }
+
         .plus {
             font-weight: bold;
         }
+
         .top-right-share {
             position: fixed;
             top: 20px;
@@ -66,6 +113,7 @@
             font-size: 15px;
             background: white;
             box-shadow: 0 4px 16px rgba(92, 59, 255, 0.10), 0 1.5px 4px rgba(0,0,0,0.08);
+            /* Gradient text */
             background-image: linear-gradient(to right, #ff7e5f, #5c3bff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -78,6 +126,7 @@
         .top-right-share:hover {
             box-shadow: 0 8px 24px rgba(92, 59, 255, 0.18), 0 2px 8px rgba(0,0,0,0.12);
         }
+
         .top-left-buttons button {
             width: 40px;
             height: 40px;
@@ -86,6 +135,7 @@
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             font-size: 16px;
+            /* Gradient icon/text */
             background-image: none;
             color: transparent;
             position: relative;
@@ -111,15 +161,16 @@
         .top-left-buttons button:hover {
             box-shadow: 0 8px 20px rgba(92, 59, 255, 0.13), 0 2px 8px rgba(0,0,0,0.10);
         }
+
         .login-banner {
             position: fixed;
             top: 40%;
             right: 0;
+            font-size: 14px;
             writing-mode: vertical-rl;
             background: linear-gradient(to bottom, #f06646, #7a4cf5);
             color: white;
             padding: 10px;
-            font-size: 14px;
             border-radius: 12px 0 0 12px;
             font-weight: 500;
             transition: box-shadow 0.2s, background 0.2s;
@@ -142,11 +193,13 @@
                 top: 5%;
             }
         }
+
         .center-text {
             text-align: center;
             margin-top: 0px;
             margin-bottom: 40px;
         }
+
         .center-text .tag{
             background: white;
             display: inline-block;
@@ -157,6 +210,7 @@
             margin-bottom: 10px;
             font-size: 15px;
         }
+
         .center-text .tag span {
             background: linear-gradient(90deg, #ff7e5f, #5c3bff 80%);
             -webkit-background-clip: text;
@@ -165,22 +219,26 @@
             color: transparent;
             letter-spacing: 1.5px;
         }
+
         .center-text h1 {
             font-size: 26px;
             font-weight: 600;
             color: #1a1a1a;
         }
+
         .cards-wrapper {
             display: flex;
             justify-content: center;
             gap: 40px;
             flex-wrap: wrap;
         }
+
         .left-cards {
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
+
         .feature-card {
             background: #111;
             color: white;
@@ -196,25 +254,30 @@
             margin-right: 0;
             box-sizing: border-box;
         }
+
         .feature-card i {
             font-size: 18px;
             margin-top: 0;
         }
+
         .feature-card h4 {
             margin: 0;
             font-size: 16px;
             font-weight: 600;
         }
+
         .feature-card p {
             margin: 5px 0 0;
             font-size: 0.65rem;
             color: #bbb;
         }
+
         .cards-divider {
             width: 2px;
             background: #ddd;
             margin: 0 20px;
         }
+
         .right-cards {
             display: flex;
             flex-direction: row;
@@ -237,12 +300,14 @@
             position: relative;
             box-sizing: border-box;
         }
+
         .info-card p {
             margin: 5px 0;
             font-size: 13px;
             font-weight: 400;
             color: #444;
         }
+
         .info-card span {
             position: absolute;
             right: 20px;
@@ -250,6 +315,7 @@
             font-size: 18px;
             color: #aaa;
         }
+
         .chat-input {
             position: fixed;
             left: 50%;
@@ -266,6 +332,7 @@
             box-shadow: 0 8px 32px rgba(92, 59, 255, 0.13), 0 2px 8px rgba(0,0,0,0.10);
             z-index: 100;
         }
+
         .chat-input i {
             font-size: 18px;
             color: #999;
@@ -277,6 +344,7 @@
             text-shadow: 0 0 8px #a45cff, 0 0 4px #5c3bff;
             transform: scale(1.15) rotate(-8deg);
         }
+
         .chat-input input {
             flex: 1;
             border: none;
@@ -284,6 +352,7 @@
             margin: 0 15px;
             font-size: 14px;
         }
+
         .chat-input button {
             background: #5c3bff;
             color: white;
@@ -294,6 +363,8 @@
             box-shadow: 0 4px 12px rgba(92, 59, 255, 0.3);
             cursor: pointer;
         }
+
+        /* Animation for chat transition */
         @keyframes chatFadeInUp {
           0% {
             opacity: 0;
@@ -313,10 +384,12 @@
         #chatContainer .cards-wrapper.chat-animate-in {
           animation: chatFadeInUp 0.5s cubic-bezier(0.4,0,0.2,1);
         }
+        /* Always thin scrollbar for window and all scrollable areas */
         html, body, * {
           scrollbar-width: thin;
           scrollbar-color: #b7aaff #f2f2f2;
         }
+        /* Webkit browsers */
         ::-webkit-scrollbar {
           width: 3px;
           height: 3px;
@@ -328,9 +401,28 @@
         ::-webkit-scrollbar-track {
           background: #f2f2f2;
         }
+        .slide-fade-up {
+            transition: opacity 0.45s cubic-bezier(0.4,0,0.2,1), transform 0.45s cubic-bezier(0.4,0,0.2,1);
+            opacity: 0 !important;
+            transform: translateY(-60px) scale(0.98);
+            pointer-events: none;
+        }
+        .chat-bubble-animate-in {
+            animation: chatBubbleFadeInUp 0.5s cubic-bezier(0.4,0,0.2,1);
+        }
+        @keyframes chatBubbleFadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(60px) scale(0.98);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
     </style>
     <style>
-        /* ...responsive design code from homePage.html... */
+        /* Responsive Design */
         @media screen and (min-width: 900px) and (max-width: 1200px) {
             .feature-card {
                 max-width: 240px;
@@ -489,6 +581,7 @@
                 font-size: 12px;
             }
         }
+
         @media screen and (min-width: 400px) and (max-width: 500px) {
             .main-container {
                 padding: 0 0 20px 0;
@@ -527,16 +620,18 @@
     <div class="top-left-buttons">
         <button class="plus"><a href="{% url 'chatindex' %}"><i class="bi bi-plus"></i></a></button>
     </div>
-    <div class="top-right-share" id="loginButton" style="cursor:pointer; background-color: #ffffff;">Log In</div>
-    <div class="login-banner"><a href="{% url 'studentregister' %}" style="color: #ffffff; text-decoration: none;"> Sign up as students </a></div>
+    <div class="top-right-share"><a href="{% url 'login' %}" style="text-decoration: none; color: inherit;">login</a></div>
+
+    <div class="login-banner"><a href="{% url 'studentregister' %}" style="text-decoration: none; color: #fff;">Sign up as student</a></div>
+
     <div id="mainContentArea">
         <div class="center-text" id="centerTextSection">
             <div class="tag"  id="centerTextTag"><span>GALGOTIA’s</span> Ai-Bot</div>
             <h1>Good day! How may i assist you ?</h1>
         </div>
+
         <div class="cards-wrapper" id="cardsWrapperSection">
-            <!-- ...existing cards-viewer and card content from homePage.html... -->
-            <div class="left-cards">
+            <div class="left-cards" id="leftCardsSection">
                 <div class="cards-viewer" style="display: flex; justify-content: center; align-items: center; width: 100%;">
                     <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; width: 100%;">
                         <div class="feature-card">
@@ -616,9 +711,10 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div id="chatContainer" style="display:none;">
-            <!-- Chat UI will be injected here -->
+            <!-- Chat area for displaying user queries -->
+            <div id="chatArea" style="display:none; flex-direction:column; gap:10px; align-items:left; width:60%;">
+                
+            </div>
         </div>
     </div>
     <div class="chat-input">
@@ -627,101 +723,7 @@
         <button type="submit" id="chatInputBtn">&#10148;</button>
     </div>
 </div>
-<!-- Register Popup Include -->
-{% include 'includes/popupSegments.html' %}
-
 <script src="{% static 'js/scripts.js' %}"></script>
-<script>
-function showChatUI() {
-    const centerText = document.getElementById('centerTextSection');
-    const cardsWrapper = document.getElementById('cardsWrapperSection');
-    const chatContainer = document.getElementById('chatContainer');
-    if (centerText) centerText.classList.add('transition-out');
-    if (cardsWrapper) cardsWrapper.classList.add('transition-out');
-    setTimeout(() => {
-        if (centerText) centerText.style.display = 'none';
-        if (cardsWrapper) cardsWrapper.style.display = 'none';
-        chatContainer.style.display = 'flex';
-        chatContainer.style.justifyContent = 'center';
-        chatContainer.style.alignItems = 'flex-start';
-        chatContainer.innerHTML = '';
-        const chatBox = document.createElement('div');
-        chatBox.className = 'cards-wrapper chat-animate-in';
-        chatBox.style.padding = '32px 0 32px 0';
-        chatBox.style.width = '60%';
-        chatBox.style.maxWidth = '700px';
-        chatBox.style.margin = '0 auto';
-        chatBox.style.minHeight = '500px';
-        chatBox.style.overflow = 'hidden';
-        chatBox.style.position = 'relative';
-        chatBox.style.display = 'block';
-        chatBox.style.paddingBottom = '80px';
-        chatContainer.appendChild(chatBox);
-        if (!chatBox.innerHTML.trim()) {
-            fetch('{% url "chatindex" %}')
-                .then(res => res.text())
-                .then(html => {
-                    const tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = html;
-                    const chatWrapper = tempDiv.querySelector('.chat-wrapper');
-                    if (chatWrapper) {
-                        chatBox.innerHTML = '';
-                        chatBox.appendChild(chatWrapper);
-                        chatWrapper.style.width = '100%';
-                        chatWrapper.style.maxWidth = '100%';
-                        chatWrapper.style.background = 'transparent';
-                        chatWrapper.style.boxShadow = 'none';
-                        chatWrapper.style.borderRadius = '0';
-                        chatWrapper.style.padding = '0';
-                        chatWrapper.style.height = 'auto';
-                        chatWrapper.style.overflowY = 'visible';
-                        chatWrapper.style.overflowX = 'hidden';
-                        chatWrapper.style.position = 'relative';
-                        chatWrapper.style.display = 'block';
-                        const children = chatWrapper.children;
-                        if (children.length > 0) {
-                            children[children.length - 1].style.marginBottom = '50px';
-                        }
-                    } else {
-                        chatBox.innerHTML = '<div style="color:red;">Failed to load chat UI.</div>';
-                    }
-                });
-        }
-    }, 400);
-}
-const chatInput = document.getElementById('chatInputBox');
-const chatBtn = document.getElementById('chatInputBtn');
-chatInput.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter' && chatInput.value.trim()) {
-        showChatUI();
-    }
-});
-chatBtn.addEventListener('click', function() {
-    if (chatInput.value.trim()) {
-        showChatUI();
-    }
-});
-document.getElementById('loginButton').addEventListener('click', function() {
-    window.location.href = "{% url 'login' %}";
-});
-document.getElementById('sidebarLoginBtn').addEventListener('click', function() {
-    window.location.href = "{% url 'login' %}";
-});
-// Show popup when user clicks Sign Up
-const signUpBtn = document.querySelectorAll('.top-signup-btn');
-if (signUpBtn) {
-  signUpBtn.addEventListener('click', function(e) {
-    e.preventDefault();
-    openPopup();
-  });
-}
-// Optional: Close popup when clicking outside content
-const popupOverlay = document.getElementById('registerPopup');
-if (popupOverlay) {
-  popupOverlay.addEventListener('click', function(e) {
-    if (e.target === popupOverlay) closePopup();
-  });
-}
-</script>
+<script src="{% static 'supplement/newJs.js' %}"></script>
 </body>
 </html>

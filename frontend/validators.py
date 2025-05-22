@@ -16,40 +16,7 @@ import json
 
 
 # Create your views here.python manage.py makemigrations frontendpython manage.py makemigrations frontend
-def home(request):
-    return render(request, "index.html")
 
-def new_chat(request):
-    return render(request, "new_chat.html")
-
-def login_view(request):
-    if request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
-        user = User.objects.filter(username=username).first()
-        if user and check_password(password, user.password):
-            request.session['user_id'] = user.id
-            return redirect('user_chat')
-        else:
-            return render(request, "login.html", {"error": "Invalid username or password."})
-    return render(request, "login.html")
-
-def register(request):
-    if request.method == "POST":
-        username = request.POST.get("username")
-        email = request.POST.get("email")
-        password = request.POST.get("password")
-        # Check for duplicate username or email
-        if User.objects.filter(username=username).exists():
-            return render(request, "register.html", {"error": "Username already exists."})
-        if User.objects.filter(email=email).exists():
-            return render(request, "register.html", {"error": "Email already exists."})
-        hashed_password = make_password(password)
-        user = User(username=username, email=email, password=hashed_password)
-        user.save()
-        request.session['user_id'] = user.id
-        return redirect('user_chat')
-    return render(request, "register.html")
 
 def user_chat(request):
     if 'user_id' in request.session:
@@ -68,22 +35,20 @@ def user_chat(request):
 def create_new_chat(request):
     if request.method == "POST":
         user_id = request.session.get('user_id')
-        if not user_id:
-            return JsonResponse({'error': 'User not logged in'}, status=401)
-        user = User.objects.filter(id=user_id).first()
-        if not user:
-            return JsonResponse({'error': 'User not found'}, status=404)
+        user = User.objects.filter(userId=user_id).first() if user_id else None
+        if not user_id or not user:
+            return redirect('login')
 
         # Get the most recent chat for this user
-        last_chat = ChatHistory.objects.filter(user=user).order_by('-date_created').first()
+        last_chat = ChatHistory.objects.filter(userId=user.userId).order_by('-date_created').first()
         if last_chat:
-            has_messages = ChatMessage.objects.filter(chat=last_chat).exists()
+            has_messages = ChatMessage.objects.filter(chatId=last_chat.chatId).exists()
             if not has_messages:
                 # Don't create a new chat if the last chat is empty, just activate it
-                return JsonResponse({'chat_id': last_chat.id, 'created': False})
+                return JsonResponse({'chat_id': last_chat.chatId, 'created': False})
         # Otherwise, create a new chat
-        new_chat = ChatHistory.objects.create(user=user, chat_heading="New Chat")
-        return JsonResponse({'chat_id': new_chat.id, 'created': True})
+        new_chat = ChatHistory.objects.create(userId=user.userId, chat_heading="New Chat")
+        return JsonResponse({'chat_id': new_chat.chatId, 'created': True})
     return JsonResponse({'error': 'Invalid request'}, status=400)
     
 @require_GET

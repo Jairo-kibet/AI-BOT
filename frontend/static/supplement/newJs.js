@@ -42,17 +42,14 @@ document.addEventListener('DOMContentLoaded', () => {
       botMsg.className = 'bot-msg bot-msg-content';
       botMsg.innerHTML = `
         <div class="bot-header">GALGOTIAS AI-Bot</div>
-        <div class="bot-typing-content"></div>
+        <p class="bot-typing-content"></p>
         <div class="bot-actions" style="display:none;">
           <div class="reaction-group">
             <i class="bi bi-hand-thumbs-up" title="Like"></i>
-            <span style="margin: 0 6px; color: #bbb;">|</span>
+            <span style="margin: 0; color: #bbb;">|</span>
             <i class="bi bi-hand-thumbs-down" title="Dislike"></i>
-            <span style="margin: 0 6px; color: #bbb;">|</span>
+            <span style="margin: 0; color: #bbb;">|</span>
             <i class="bi bi-clipboard" title="Copy"></i>
-          </div>
-          <div class="more-group">
-            <i class="bi bi-three-dots-vertical"></i>
           </div>
           <button class="regenerate-btn">
             <i class="bi bi-arrow-repeat"> Regenerate</i>

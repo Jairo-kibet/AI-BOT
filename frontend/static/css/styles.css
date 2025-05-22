@@ -318,7 +318,6 @@ body {
 .sidebar .icon-box { color: #8d4eff; font-size: 18px; }
 .sidebar .title-text { font-weight: 600; font-size: 14px; letter-spacing: 2px; color: #000; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sidebar .new-chat-btn { background: linear-gradient(to right, #8661f9, #9f5afd); color: white; border-radius: 20px; font-size: 13px; padding: 6px 16px; border: none; }
-.sidebar .search-btn { background-color: #000; color: white; width: 36px; height: 36px; border-radius: 50%; font-size: 14px; display: flex; align-items: center; justify-content: center; border: none; }
 .sidebar .section-label { font-size: 11px; color: #999; text-transform: uppercase; font-weight: 500; letter-spacing: 0.5px; }
 .sidebar .clear-link { font-size: 11px; color: #5a5af5; text-decoration: none; cursor: pointer; }
 .conversation-list { margin-top: 8px; }
@@ -560,7 +559,7 @@ body {
       align-items: center;
       margin-top: 18px;
       width: 100%;
-      gap: 12px;
+      gap: 8px;
     }
     .reaction-group, .more-group, .regenerate-btn {
       background: #fff;
@@ -573,7 +572,7 @@ body {
       transition: box-shadow 0.2s;
     }
     .reaction-group {
-      gap: 8px;
+      gap: 5px;
     }
     .more-group {
       margin-left: 8px;
@@ -592,10 +591,9 @@ body {
       margin-right: 0;
       color: #888;
       cursor: pointer;
-      font-size: 17px;
+      font-size: 10px;
       vertical-align: middle;
       transition: all 0.2s ease;
-      line-height: 1;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -604,7 +602,7 @@ body {
       box-shadow: none;
     }
     .regenerate-btn i {
-        font-size: 14.2px; 
+        font-size: 12px; 
         padding: 2px 0;
     }
     .regenerate-btn i:hover {

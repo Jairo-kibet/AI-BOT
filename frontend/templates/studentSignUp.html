@@ -513,15 +513,16 @@
     <h3>Student Sign up</h3>
     <p class="sub">Create an account to get personalized answers about courses, fees, admissions, and student life of your college. Designed to guide future Galgotians every step of the way.</p>
 
-    <form>
+    <form method="POST" action="/student-sign-up/">
+      {% csrf_token %}
       <div class="mb-3">
         <label class="form-label">Email Address*</label>
-        <input type="email" class="form-control" placeholder="Enter you college email" required />
+        <input type="email" id="username" name="username" class="form-control" placeholder="Enter you college email" required />
       </div>
 
       <div class="mb-3">
         <label class="form-label">Password*</label>
-        <input type="password" class="form-control" placeholder="Enter password" required />
+        <input type="password" id="password" name="password" class="form-control" placeholder="Enter password" required />
       </div>
 
       <p class="form-note">
