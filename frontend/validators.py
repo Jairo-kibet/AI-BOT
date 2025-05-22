@@ -15,7 +15,7 @@ from django.views.decorators.http import require_GET, require_POST
 import json
 
 
-# Create your views here.
+# Create your views here.python manage.py makemigrations frontendpython manage.py makemigrations frontend
 def home(request):
     return render(request, "index.html")
 

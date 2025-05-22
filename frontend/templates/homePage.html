@@ -597,15 +597,15 @@
     </style>
 </head>
 <body>
-<div class="main-container">
+<div class="main-container sidebar-open">
     <div class="top-left-buttons">
         <button class="window-sidebar" id="sidebarToggle"><i class="bi bi-window-sidebar"></i></button>
         <button class="plus"><a href="{% url 'chatindex' %}"><i class="bi bi-plus"></i></a></button>
     </div>
 
     <!-- Sidebar overlay and panel -->
-    <div id="sidebarOverlay" style="display:none; position:fixed; top:0; left:0; width:20vw; height:100vh; background:transparent; z-index:200;"></div>
-    <div id="sidebarPanel" style="display:none; position:fixed; top:0; left:0; height:100vh; z-index:201;">
+    <div id="sidebarOverlay" class="sidebar-visible" style="position:fixed; top:0; left:0; width:20vw; height:100vh; background:transparent; z-index:200;"></div>
+    <div id="sidebarPanel" class="sidebar-visible" style="position:fixed; top:0; left:0; height:100vh; z-index:201;">
         <div class="sidebar d-flex flex-column"
              style="height:100vh; width:280px; min-width:280px; max-width:280px; background:#fff; border-radius:20px 0 0 20px; box-shadow:0px 4px 12px rgba(0,0,0,0.08); overflow:hidden; display:flex; flex-direction:column; padding-top:5px;">
             {% include "includes/sidebar_section.html" %}
@@ -788,6 +788,12 @@ chatBtn.addEventListener('click', function() {
     if (chatInput.value.trim()) {
         showChatUI();
     }
+});
+// Ensure sidebar is open on page load
+window.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('sidebarPanel').classList.add('sidebar-visible');
+    document.getElementById('sidebarOverlay').classList.add('sidebar-visible');
+    document.querySelector('.main-container').classList.add('sidebar-open');
 });
 </script>
 </body>

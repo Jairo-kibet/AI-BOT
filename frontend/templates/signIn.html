@@ -296,6 +296,10 @@
         font-size: 0.89rem !important;
       }
     }
+    form button {
+      max-width: 50%;
+      margin: 0 auto !important;
+    }
   </style>
 </head>
 <body>
@@ -321,19 +325,20 @@
   <div class="right">
     <h3>Sign In</h3>
     <p class="sub">Login your account to get personalized answers about courses, fees, admissions, and student life. Designed to guide future Galgotians every step of the way.</p>
-
-    <form>
+    <div id="form-error-region" class="visually-hidden red" aria-live="polite"></div>
+    <form  method="POST" action="/sign-in/" class="login-form" autocomplete="off" id="loginForm">
+      {% csrf_token %}
       <div class="mb-3">
         <label class="form-label">Email Address*</label>
-        <input type="email" class="form-control" placeholder="ex.email@domain.com" required />
+        <input type="email" class="form-control" id="username" name="username" autocomplete="username" placeholder="ex.email@domain.com" required />
       </div>
 
       <div class="mb-3">
         <label class="form-label">Password*</label>
-        <input type="password" class="form-control" placeholder="Enter password" required />
+        <input type="password" id="password" name="password" class="form-control" placeholder="Enter password"autocomplete="current-password" aria-describedby="togglePassword" required />
       </div>
 
-      <button type="submit" class="btn-gradient text-center"><a href="{% url 'homepage' %}">Get Started</a></button>
+      <button type="submit" class="btn-gradient text-center">Get Started</button>
     </form>
 
     <p class="login-link text-center">
@@ -344,4 +349,12 @@
 </div>
 
 </body>
+<script>
+  const errorRegion = document.getElementById('form-error-region');
+  // Move error to aria-live region for accessibility
+  const errorDiv = document.querySelector('.form-error');
+  if (errorDiv && errorRegion) {
+    errorRegion.textContent = errorDiv.textContent;
+  }
+</script>
 </html>

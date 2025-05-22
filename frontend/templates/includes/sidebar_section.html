@@ -412,23 +412,11 @@
 </div>
 <div class="flex-grow-1 d-flex flex-column" style="min-height:0;">
   <div class="scrollable-conversations flex-grow-1 d-flex flex-column" style="overflow-y:auto; min-height:0;">
-    <div class="conversations px-3 scrollable-conversations" style="min-height:0;">
-      <div class="conversation-item"><i class="bi bi-chat-square-dots" style="margin-right: 5px;"></i> What is the admission process in...</div>
-      <div class="conversation-item"><i class="bi bi-chat-square-dots" style="margin-right: 5px;"></i> What is the faculty count and...</div>
-      <div class="conversation-item"><i class="bi bi-chat-square-dots" style="margin-right: 5px;"></i> How many course are there in...</div>
-      <div class="conversation-item"><i class="bi bi-chat-square-dots" style="margin-right: 5px;"></i> Are there any scholarships...</div>
-      <div class="conversation-item"><i class="bi bi-chat-square-dots" style="margin-right: 5px;"></i> What sports facilities are...</div>
-      <div class="conversation-item"><i class="bi bi-chat-square-dots" style="margin-right: 5px;"></i> What sports facilities are...</div>
-      <div class="conversation-item"><i class="bi bi-chat-square-dots" style="margin-right: 5px;"></i> Admission criteria for B'tech...</div>
-      <div class="conversation-item"><i class="bi bi-chat-square-dots" style="margin-right: 5px;"></i> Are there any scholarships...</div>
-      <div class="conversation-item"><i class="bi bi-chat-square-dots" style="margin-right: 5px;"></i> What sports facilities are...</div>
-      <div class="conversation-item"><i class="bi bi-chat-square-dots" style="margin-right: 5px;"></i> What sports facilities are...</div>
-      <div class="conversation-item"><i class="bi bi-chat-square-dots" style="margin-right: 5px;"></i> Admission criteria for B'tech...</div>
-      <div class="conversation-item"><i class="bi bi-chat-square-dots" style="margin-right: 5px;"></i> Are there any scholarships...</div>
-      <div class="conversation-item"><i class="bi bi-chat-square-dots" style="margin-right: 5px;"></i> What sports facilities are...</div>
-      <div class="conversation-item"><i class="bi bi-chat-square-dots" style="margin-right: 5px;"></i> What sports facilities are...</div>
-      <div class="conversation-item"><i class="bi bi-chat-square-dots" style="margin-right: 5px;"></i> Admission criteria for B'tech...</div>
+    {% for conversation in chat_conversations %}
+    <div class="conversations px-3 scrollable-conversations" style="min-height:0;" data-chat-id="{{ conversation.chatId }}">
+      <div class="conversation-item"><i class="bi bi-chat-square-dots" style="margin-right: 5px;"></i> {{ conversation.chat_heading }}</div>
     </div>
+    {% endfor %}
   </div>
 </div>
 <!-- Starred Conversations at the bottom -->
@@ -437,24 +425,19 @@
       <span style="color:#5c3bff;">Starred Conversations</span>
       <i class="bi bi-arrow-up-short ms-auto" style="font-size:18px; color:#5c3bff; margin-right:4px;"></i>
   </div>
-  <div class="conversations px-3 starred-scrollable scrollable-conversations">
-    <div class="conversation-item"><i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> Where is your campus located ?</div>
-    <div class="conversation-item"><i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> Where is your campus located ?</div>
-    <div class="conversation-item"><i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> When does the new academic...</div>
-    <div class="conversation-item"><i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> Where is your campus located ?</div>
-    <div class="conversation-item"><i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> Where is your campus located ?</div>
-    <div class="conversation-item"><i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> When does the new academic...</div>
-    <div class="conversation-item"><i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> Where is your campus located ?</div>
-    <div class="conversation-item"><i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> Where is your campus located ?</div>
-    <div class="conversation-item"><i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> Where is your campus located ?</div>
-    <div class="conversation-item"><i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> When does the new academic...</div>
-    <div class="conversation-item"><i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> Where is your campus located ?</div>
-    <div class="conversation-item"><i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> Where is your campus located ?</div>
-    <div class="conversation-item"><i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> When does the new academic...</div>
-    <div class="conversation-item"><i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> Where is your campus located ?</div>
-    <div class="conversation-item"><i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> Where is your campus located ?</div>
-    <div class="conversation-item"><i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> When does the new academic...</div>
-  </div>
+  {% if starred_chats %}
+    {% for starred_chat in starred_chats|dictsort:"date_created" %}
+      <div class="conversations px-3 starred-scrollable scrollable-conversations" data-chat-id="{{ starred_chat.chatId }}">
+        <div class="conversation-item">
+          <i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> {{ starred_chat.chat_heading }}
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="px-3 text-center pt-2" style="font-size:13px; color:#999;">
+      No starred chats available.
+    </div>
+  {% endif %}
 </div>
 <div class="sidebar-footer mt-auto pb-2 mb-5" style="background: linear-gradient(90deg,#f8f6ff 60%,#f3ecfc 100%);">
   <div class="user-profile-card d-flex align-items-center" style="background: linear-gradient(90deg,#f8f6ff 60%,#f3ecfc 100%); border-radius: 16px; border: 1px solid rgba(164, 92, 255, 0.13);">
@@ -464,7 +447,7 @@
     <div class="user-info flex-grow-1">
       <div class="user-name" style="font-weight:600; color:#5c3bff; font-size:12px; letter-spacing:0.5px;">User Name</div>
     </div>
-    <button class="btn btn-sm btn-transparent" style="color:#5c3bff; margin-right: 10px;"><i class="bi bi-pencil"></i></button>
+    <a href="{% url 'logout' %}" class="btn btn-sm btn-transparent" style="color:#5c3bff; margin-right: 10px;"><i class="bi bi-box-arrow-right" title="logout"></i></a>
   </div>
 </div>
 <script>

@@ -1,3 +1,4 @@
+
 // Sidebar close button logic for sidebar_section.html
 // This script assumes the sidebar is in a parent with id 'sidebarPanel' and overlay with id 'sidebarOverlay'
 document.addEventListener('DOMContentLoaded', function() {

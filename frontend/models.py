@@ -40,6 +40,7 @@ class starredChat(models.Model):
     chatId = models.ForeignKey(ChatHistory, on_delete=models.CASCADE, related_name='starred_chats')
     userId = models.ForeignKey(User, on_delete=models.CASCADE, related_name='starred_chats')
     is_starred = models.BooleanField(default=False)
+    date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return str(self.is_starred)

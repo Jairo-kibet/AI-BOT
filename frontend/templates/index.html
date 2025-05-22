@@ -1,0 +1,727 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Galgotia AI Bot</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ...existing code from homePage.html <style> blocks... */
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #f2f2f2;
+        }
+        .top-left-buttons {
+            transition: opacity 0.3s, visibility 0.3s;
+            opacity: 1;
+            visibility: visible;
+        }
+        .top-left-buttons.hide-buttons {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .main-container.sidebar-open .chat-input {
+            left: calc(50% + 140px);
+        }
+        .main-container .chat-input {
+            transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), left 0.35s cubic-bezier(0.4,0,0.2,1);
+        }
+        .main-container {
+            padding: 30px 60px;
+            position: relative;
+        }
+        .top-left-buttons {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 102;
+        }
+        .top-left-buttons button {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: #f3ecfc;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            font-size: 16px;
+            color: #a45cff;
+        }
+        .plus {
+            font-weight: bold;
+        }
+        .top-right-share {
+            position: fixed;
+            top: 20px;
+            right: 30px;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 15px;
+            background: white;
+            box-shadow: 0 4px 16px rgba(92, 59, 255, 0.10), 0 1.5px 4px rgba(0,0,0,0.08);
+            background-image: linear-gradient(to right, #ff7e5f, #5c3bff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+            transition: box-shadow 0.2s;
+            cursor: pointer;
+            z-index: 102;
+        }
+        .top-right-share:hover {
+            box-shadow: 0 8px 24px rgba(92, 59, 255, 0.18), 0 2px 8px rgba(0,0,0,0.12);
+        }
+        .top-left-buttons button {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            font-size: 16px;
+            background-image: none;
+            color: transparent;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .top-left-buttons button i,
+        .top-left-buttons button.plus a {
+            background: linear-gradient(90deg, #ff7e5f, #5c3bff 80%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+            color: transparent;
+            font-weight: bold;
+            display: inline-block;
+        }
+        .top-left-buttons button.plus a {
+            text-decoration: none;
+            font-size: 22px;
+            line-height: 40px;
+        }
+        .top-left-buttons button:hover {
+            box-shadow: 0 8px 20px rgba(92, 59, 255, 0.13), 0 2px 8px rgba(0,0,0,0.10);
+        }
+        .login-banner {
+            position: fixed;
+            top: 40%;
+            right: 0;
+            writing-mode: vertical-rl;
+            background: linear-gradient(to bottom, #f06646, #7a4cf5);
+            color: white;
+            padding: 10px;
+            font-size: 14px;
+            border-radius: 12px 0 0 12px;
+            font-weight: 500;
+            transition: box-shadow 0.2s, background 0.2s;
+            box-shadow: 0 2px 12px rgba(92, 59, 255, 0.10);
+            cursor: pointer;
+            z-index: 101;
+        }
+        .login-banner:hover {
+            background: linear-gradient(to bottom, #f9a46a, #a18aff);
+            box-shadow: 0 8px 32px rgba(92, 59, 255, 0.18), 0 2px 8px rgba(0,0,0,0.12);
+            filter: brightness(1.08);
+        }
+        @media (max-width: 900px) {
+            .login-banner {
+                top: 10%;
+            }
+        }
+        @media (max-width: 700px) {
+            .login-banner {
+                top: 5%;
+            }
+        }
+        .center-text {
+            text-align: center;
+            margin-top: 0px;
+            margin-bottom: 40px;
+        }
+        .center-text .tag{
+            background: white;
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            color: #222;
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+        .center-text .tag span {
+            background: linear-gradient(90deg, #ff7e5f, #5c3bff 80%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 1.5px;
+        }
+        .center-text h1 {
+            font-size: 26px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        .cards-wrapper {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+        .left-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .feature-card {
+            background: #111;
+            color: white;
+            padding: 20px;
+            width: 130px;
+            height: 130px;
+            border-radius: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: flex-start;
+            justify-content: center;
+            margin-right: 0;
+            box-sizing: border-box;
+        }
+        .feature-card i {
+            font-size: 18px;
+            margin-top: 0;
+        }
+        .feature-card h4 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .feature-card p {
+            margin: 5px 0 0;
+            font-size: 0.65rem;
+            color: #bbb;
+        }
+        .cards-divider {
+            width: 2px;
+            background: #ddd;
+            margin: 0 20px;
+        }
+        .right-cards {
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+            align-items: stretch;
+        }
+        .info-card {
+            background: white;
+            padding: 20px;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 500;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 130px;
+            min-width: 220px;
+            max-width: 240px;
+            position: relative;
+            box-sizing: border-box;
+        }
+        .info-card p {
+            margin: 5px 0;
+            font-size: 13px;
+            font-weight: 400;
+            color: #444;
+        }
+        .info-card span {
+            position: absolute;
+            right: 20px;
+            bottom: 15px;
+            font-size: 18px;
+            color: #aaa;
+        }
+        .chat-input {
+            position: fixed;
+            left: 50%;
+            bottom: 24px;
+            transform: translateX(-50%);
+            margin: 0;
+            background: white;
+            border-radius: 30px;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            width: 600px;
+            max-width: 96vw;
+            box-shadow: 0 8px 32px rgba(92, 59, 255, 0.13), 0 2px 8px rgba(0,0,0,0.10);
+            z-index: 100;
+        }
+        .chat-input i {
+            font-size: 18px;
+            color: #999;
+            transition: color 0.2s, text-shadow 0.2s, transform 0.2s;
+            cursor: pointer;
+        }
+        .chat-input i:hover {
+            color: #5c3bff;
+            text-shadow: 0 0 8px #a45cff, 0 0 4px #5c3bff;
+            transform: scale(1.15) rotate(-8deg);
+        }
+        .chat-input input {
+            flex: 1;
+            border: none;
+            outline: none;
+            margin: 0 15px;
+            font-size: 14px;
+        }
+        .chat-input button {
+            background: #5c3bff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            padding: 10px 12px;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(92, 59, 255, 0.3);
+            cursor: pointer;
+        }
+        @keyframes chatFadeInUp {
+          0% {
+            opacity: 0;
+            transform: translateY(60px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .cards-wrapper.transition-out, .center-text.transition-out {
+          transition: opacity 0.4s, transform 0.4s;
+          opacity: 0;
+          transform: translateY(-40px);
+          pointer-events: none;
+        }
+        #chatContainer .cards-wrapper.chat-animate-in {
+          animation: chatFadeInUp 0.5s cubic-bezier(0.4,0,0.2,1);
+        }
+        html, body, * {
+          scrollbar-width: thin;
+          scrollbar-color: #b7aaff #f2f2f2;
+        }
+        ::-webkit-scrollbar {
+          width: 3px;
+          height: 3px;
+        }
+        ::-webkit-scrollbar-thumb {
+          background: #b7aaff;
+          border-radius: 6px;
+        }
+        ::-webkit-scrollbar-track {
+          background: #f2f2f2;
+        }
+    </style>
+    <style>
+        /* ...responsive design code from homePage.html... */
+        @media screen and (min-width: 900px) and (max-width: 1200px) {
+            .feature-card {
+                max-width: 240px;
+            }
+            .cards-wrapper {
+                gap: 30px;
+            }
+            .cards-viewer {
+                flex-direction: column;
+                align-items: center;
+            }
+            .center-text {
+                margin-top: 10%;
+            }
+            .left-cards {
+                gap: 16px;
+            }
+        }
+        @media (max-width: 900px) {
+            .main-container {
+                padding: 20px 10px;
+            }
+            .cards-wrapper {
+                gap: 20px;
+            }
+            .right-cards {
+                gap: 10px;
+                max-width: 250px;
+            }
+            .cards-viewer {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+        @media screen and (min-width: 800px) and (max-width: 900px) {
+            .main-container {
+                padding: 10px 2vw;
+            }
+            .cards-wrapper {
+                flex-direction: column;
+                align-items: center;
+                gap: 24px;
+            }
+            .center-text {
+                margin-top: 10%;
+            }
+            .left-cards {
+                gap: 16px;
+            }
+            .right-cards {
+                flex-direction: column;
+                gap: 12px;
+                min-width: unset;
+                align-items: stretch;
+            }
+            .info-card {
+                min-width: 180px;
+                max-width: 100%;
+                width: 100%;
+            }
+            .feature-card {
+                width: 200px;
+                height: auto;
+                font-size: 14px;
+            }
+            .login-banner {
+                top: 10%;
+                font-size: 13px;
+                padding: 7px;
+            }
+            .cards-viewer {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+        @media screen and (min-width: 700px) and (max-width: 800px) {
+            .main-container {
+                padding: 0 0 20px 0;
+            }
+            .top-left-buttons {
+                top: 2.5%;
+                left: 2%;
+            }
+            .center-text {
+                margin-top: 10%;
+            }
+            .top-right-share {
+                top: 2.5%;
+                right: 10px;
+                padding: 7px 12px;
+                font-size: 12px;
+            }
+            .login-banner {
+                top: 20%;
+                font-size: 12px;
+                padding: 5px;
+            }
+            .center-text h1 {
+                font-size: 18px;
+            }
+            .cards-viewer {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+        @media (max-width: 700px) {
+            .main-container {
+                padding: 0 0 40px 0;
+            }
+            .top-left-buttons {
+                top: 2.5;
+                left: 2.5%;
+            }
+            .top-right-share {
+                top: 2.5%;
+                right: 2.5%;
+                padding: 7px 12px;
+                font-size: 12px;
+            }
+            .login-banner {
+                top: 20%;
+                font-size: 12px;
+                padding: 5px;
+            }
+            .center-text {
+                margin-top: 10%;
+                font-size: 14px;
+            }
+            .center-text h1 {
+                font-size: 18px;
+            }
+            .center-text .tag {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+            .feature-card {
+                width: 200px;
+                height: auto;
+                padding: 12px;
+                font-size: 12px;
+                background: #fff !important;
+                color: #111 !important;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+                border: 1px solid #eee;
+            }
+            .feature-card h4, .feature-card p, .feature-card i {
+                color: #111 !important;
+            }
+            .card-divider, .right-cards {
+                display: none !important;
+            }
+        }
+        @media (max-width: 400px) {
+            .center-text {
+                margin-top: 30%;
+                font-size: 12px;
+            }
+        }
+        @media screen and (min-width: 400px) and (max-width: 500px) {
+            .main-container {
+                padding: 0 0 20px 0;
+            }
+            .top-right-share {
+                font-size: 10px;
+                padding: 5px 8px;
+            }
+            .login-banner {
+                font-size: 10px;
+                padding: 3px;
+                border-radius: 8px 0 0 8px;
+            }
+            .center-text {
+                font-size: 18px;
+                margin-top: 18%;
+            }
+            .center-text .tag {
+                font-size: 14px;
+                padding: 4px 8px;
+            }
+            .feature-card {
+                width: 120px;
+                height: auto;
+                padding: 8px;
+                font-size: 10px;
+            }
+            .feature-card h4 {
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="main-container">
+    <div class="top-left-buttons">
+        <button class="plus"><a href="{% url 'chatindex' %}"><i class="bi bi-plus"></i></a></button>
+    </div>
+    <div class="top-right-share" id="loginButton" style="cursor:pointer; background-color: #ffffff;">Log In</div>
+    <div class="login-banner"><a href="{% url 'studentregister' %}" style="color: #ffffff; text-decoration: none;"> Sign up as students </a></div>
+    <div id="mainContentArea">
+        <div class="center-text" id="centerTextSection">
+            <div class="tag"  id="centerTextTag"><span>GALGOTIA’s</span> Ai-Bot</div>
+            <h1>Good day! How may i assist you ?</h1>
+        </div>
+        <div class="cards-wrapper" id="cardsWrapperSection">
+            <!-- ...existing cards-viewer and card content from homePage.html... -->
+            <div class="left-cards">
+                <div class="cards-viewer" style="display: flex; justify-content: center; align-items: center; width: 100%;">
+                    <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; width: 100%;">
+                        <div class="feature-card">
+                            <div>
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            <div>
+                                <h4>Explore</h4>
+                                <p>Discover what this chatbot can assist you with.</p>
+                            </div>
+                        </div>
+                        <div class="card-divider" style="display: flex; align-items: center; justify-content: center;">
+                            <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; height: 60px; min-height: 20px; margin: 0 20px;">
+                                <div style="width: 4px; height: 28px; background: #cccccc; border-radius: 2px; margin: 0 0.5px;"></div>
+                                <div style="width: 4px; height: 28px; background: #cccccc; border-radius: 2px; margin: 0 0.5px;"></div>
+                                <div style="width: 4px; height: 28px; background: #cccccc; border-radius: 2px; margin: 0 0.5px;"></div>
+                            </div>
+                        </div>
+                        <div class="right-cards" style="justify-content: center; align-items: center; display: flex; height: auto;">
+                            <div class="info-card">"Programs Offered"<p>Learn about undergraduate, postgraduate, and diploma programs.</p>
+                                <span>&rarr;</span></div>
+                            <div class="info-card">"Admission Process"<p>Step-by-step guide to applying to our college.</p>
+                                <span>&rarr;</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="cards-viewer" style="display: flex; justify-content: center; align-items: center; width: 100%;">
+                    <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; width: 100%;">
+                        <div class="feature-card">
+                            <div>
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <div>
+                                <h4>Capabilities</h4>
+                                <p>Here’s what the chatbot can help you with.</p>
+                            </div>
+                        </div>
+                        <div class="card-divider" style="display: flex; align-items: center; justify-content: center;">
+                            <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; height: 60px; min-height: 20px; margin: 0 20px;">
+                                <div style="width: 4px; height: 28px; background: #cccccc; border-radius: 2px; margin: 0 0.5px;"></div>
+                                <div style="width: 4px; height: 28px; background: #cccccc; border-radius: 2px; margin: 0 0.5px;"></div>
+                                <div style="width: 4px; height: 28px; background: #cccccc; border-radius: 2px; margin: 0 0.5px;"></div>
+                            </div>
+                        </div>
+                        <div class="right-cards" style="justify-content: center; align-items: center; display: flex; height: auto;">
+                            <div class="info-card">"Explain"<p>Admission criteria for B'tech and MBA programs.</p>
+                                <span>&rarr;</span></div>
+                            <div class="info-card">"Remind"<p>Key deadlines for applications and entrance exams.</p>
+                                <span>&rarr;</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="cards-viewer" style="display: flex; justify-content: center; align-items: center; width: 100%;">
+                    <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; width: 100%;">
+                        <div class="feature-card">
+                            <div>
+                                <i class="fas fa-exclamation-circle"></i>
+                            </div>
+                            <div>
+                                <h4>Limitation</h4>
+                                <p>Please note these current limits.</p>
+                            </div>
+                        </div>
+                        <div class="card-divider" style="display: flex; align-items: center; justify-content: center;">
+                            <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; height: 60px; min-height: 20px; margin: 0 20px;">
+                                <div style="width: 4px; height: 28px; background: #cccccc; border-radius: 2px; margin: 0 0.5px;"></div>
+                                <div style="width: 4px; height: 28px; background: #cccccc; border-radius: 2px; margin: 0 0.5px;"></div>
+                                <div style="width: 4px; height: 28px; background: #cccccc; border-radius: 2px; margin: 0 0.5px;"></div>
+                            </div>
+                        </div>
+                        <div class="right-cards" style="justify-content: center; align-items: center; display: flex; height: auto;">
+                            <div class="info-card">"May"<p>Occasionally provide outdated or incorrect event info.</p>
+                                <span>&rarr;</span></div>
+                            <div class="info-card">"Limited"<p>May not reflect policy changes after [month/year].</p>
+                                <span>&rarr;</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="chatContainer" style="display:none;">
+            <!-- Chat UI will be injected here -->
+        </div>
+    </div>
+    <div class="chat-input">
+        <i class="bi bi-soundwave"></i>
+        <input type="text" id="chatInputBox" placeholder="Type your question here...">
+        <button type="submit" id="chatInputBtn">&#10148;</button>
+    </div>
+</div>
+<!-- Register Popup Include -->
+{% include 'includes/popupSegments.html' %}
+
+<script src="{% static 'js/scripts.js' %}"></script>
+<script>
+function showChatUI() {
+    const centerText = document.getElementById('centerTextSection');
+    const cardsWrapper = document.getElementById('cardsWrapperSection');
+    const chatContainer = document.getElementById('chatContainer');
+    if (centerText) centerText.classList.add('transition-out');
+    if (cardsWrapper) cardsWrapper.classList.add('transition-out');
+    setTimeout(() => {
+        if (centerText) centerText.style.display = 'none';
+        if (cardsWrapper) cardsWrapper.style.display = 'none';
+        chatContainer.style.display = 'flex';
+        chatContainer.style.justifyContent = 'center';
+        chatContainer.style.alignItems = 'flex-start';
+        chatContainer.innerHTML = '';
+        const chatBox = document.createElement('div');
+        chatBox.className = 'cards-wrapper chat-animate-in';
+        chatBox.style.padding = '32px 0 32px 0';
+        chatBox.style.width = '60%';
+        chatBox.style.maxWidth = '700px';
+        chatBox.style.margin = '0 auto';
+        chatBox.style.minHeight = '500px';
+        chatBox.style.overflow = 'hidden';
+        chatBox.style.position = 'relative';
+        chatBox.style.display = 'block';
+        chatBox.style.paddingBottom = '80px';
+        chatContainer.appendChild(chatBox);
+        if (!chatBox.innerHTML.trim()) {
+            fetch('{% url "chatindex" %}')
+                .then(res => res.text())
+                .then(html => {
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = html;
+                    const chatWrapper = tempDiv.querySelector('.chat-wrapper');
+                    if (chatWrapper) {
+                        chatBox.innerHTML = '';
+                        chatBox.appendChild(chatWrapper);
+                        chatWrapper.style.width = '100%';
+                        chatWrapper.style.maxWidth = '100%';
+                        chatWrapper.style.background = 'transparent';
+                        chatWrapper.style.boxShadow = 'none';
+                        chatWrapper.style.borderRadius = '0';
+                        chatWrapper.style.padding = '0';
+                        chatWrapper.style.height = 'auto';
+                        chatWrapper.style.overflowY = 'visible';
+                        chatWrapper.style.overflowX = 'hidden';
+                        chatWrapper.style.position = 'relative';
+                        chatWrapper.style.display = 'block';
+                        const children = chatWrapper.children;
+                        if (children.length > 0) {
+                            children[children.length - 1].style.marginBottom = '50px';
+                        }
+                    } else {
+                        chatBox.innerHTML = '<div style="color:red;">Failed to load chat UI.</div>';
+                    }
+                });
+        }
+    }, 400);
+}
+const chatInput = document.getElementById('chatInputBox');
+const chatBtn = document.getElementById('chatInputBtn');
+chatInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && chatInput.value.trim()) {
+        showChatUI();
+    }
+});
+chatBtn.addEventListener('click', function() {
+    if (chatInput.value.trim()) {
+        showChatUI();
+    }
+});
+document.getElementById('loginButton').addEventListener('click', function() {
+    window.location.href = "{% url 'login' %}";
+});
+document.getElementById('sidebarLoginBtn').addEventListener('click', function() {
+    window.location.href = "{% url 'login' %}";
+});
+// Show popup when user clicks Sign Up
+const signUpBtn = document.querySelectorAll('.top-signup-btn');
+if (signUpBtn) {
+  signUpBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    openPopup();
+  });
+}
+// Optional: Close popup when clicking outside content
+const popupOverlay = document.getElementById('registerPopup');
+if (popupOverlay) {
+  popupOverlay.addEventListener('click', function(e) {
+    if (e.target === popupOverlay) closePopup();
+  });
+}
+</script>
+</body>
+</html>

@@ -480,6 +480,10 @@
         margin-top: 0%;
       }
     }
+    form button {
+      max-width: 50%;
+      margin: 0 auto !important;
+    }
   </style>
 </head>
 <body>
@@ -506,15 +510,16 @@
     <h3>Sign up</h3>
     <p class="sub">Create an account to get personalized answers about courses, fees, admissions, and student life. Designed to guide future Galgotians every step of the way.</p>
 
-    <form>
+    <form  method="POST" action="/sign-up/">
+      {% csrf_token %}
       <div class="mb-3">
         <label class="form-label">Email Address*</label>
-        <input type="email" class="form-control" placeholder="ex.email@domain.com" required />
+        <input type="email" id="username" name="username" class="form-control" placeholder="ex.email@domain.com" required />
       </div>
 
       <div class="mb-3">
         <label class="form-label">Password*</label>
-        <input type="password" class="form-control" placeholder="Enter password" required />
+        <input type="password" id="password" name="password" class="form-control" placeholder="Enter password" required />
       </div>
 
       <p class="form-note">
