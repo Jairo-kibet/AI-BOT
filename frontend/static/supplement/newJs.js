@@ -16,17 +16,34 @@ document.addEventListener('DOMContentLoaded', () => {
         <i class="bi bi-pencil-square edit-icon ms-auto"></i>
       `;
       chatWrapper.appendChild(userDiv);
+      // --- Ensure user message is always visible above chat-input ---
+      const chatInput = document.querySelector('.chat-input');
+      if (chatInput) {
+        const userRect = userDiv.getBoundingClientRect();
+        const inputRect = chatInput.getBoundingClientRect();
+        // If the bottom of the user message is below the top of chat-input, scroll so it is visible
+        if (userRect.bottom > inputRect.top - 60) {
+          const offset = userRect.bottom - (inputRect.top - 60);
+          if (offset > 0) {
+            window.scrollBy({
+              top: offset,
+              left: 0,
+              behavior: 'auto'
+            });
+          }
+        }
+      }
       scrollChatToBottom();
     }
 
-    // Add bot message and actions to chat
-    function appendBotMessage(htmlContent) {
+    // Add bot message and actions to chat with typing effect
+    function appendBotMessageTyping(htmlContent) {
       const botMsg = document.createElement('div');
       botMsg.className = 'bot-msg bot-msg-content';
       botMsg.innerHTML = `
         <div class="bot-header">GALGOTIAS AI-Bot</div>
-        <div>${htmlContent}</div>
-        <div class="bot-actions">
+        <div class="bot-typing-content"></div>
+        <div class="bot-actions" style="display:none;">
           <div class="reaction-group">
             <i class="bi bi-hand-thumbs-up" title="Like"></i>
             <span style="margin: 0 6px; color: #bbb;">|</span>
@@ -44,6 +61,93 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
       chatWrapper.appendChild(botMsg);
       scrollChatToBottom();
+      const typingDiv = botMsg.querySelector('.bot-typing-content');
+      const botActions = botMsg.querySelector('.bot-actions');
+      // Parse HTML into nodes and type word by word with formatting
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = htmlContent;
+      const nodes = Array.from(tempDiv.childNodes);
+      let nodeIdx = 0, wordIdx = 0, currentNode = null, currentWords = [], typingNode = null;
+      function typeNext() {
+        if (!currentNode || wordIdx >= currentWords.length) {
+          // Move to next node
+          if (nodeIdx >= nodes.length) {
+            // Done typing all nodes
+            if (botActions) botActions.style.display = '';
+            // Ensure last line is 50px above chat-input and scroll to bottom
+            const chatInput = document.querySelector('.chat-input');
+            if (chatInput) {
+              const typingRect = typingDiv.getBoundingClientRect();
+              const inputRect = chatInput.getBoundingClientRect();
+              // Get the bot-actions element's bottom
+              const botActionsRect = botActions ? botActions.getBoundingClientRect() : typingRect;
+              const minGap = 50;
+              // If the bottom of bot-actions is less than 50px above chat-input, scroll up
+              const offset = botActionsRect.bottom - (inputRect.top - minGap);
+              if (offset > 0) {
+                window.scrollBy({
+                  top: offset,
+                  left: 0,
+                  behavior: 'auto'
+                });
+              }
+            }
+            // Remove scrollIntoView to prevent jumping to top after typing
+            // typingDiv.scrollIntoView({ behavior: 'auto', block: 'end' });
+            return;
+          }
+          currentNode = nodes[nodeIdx++];
+          if (currentNode.nodeType === Node.TEXT_NODE) {
+            currentWords = currentNode.textContent.split(/(\s+)/);
+            typingNode = document.createTextNode('');
+            typingDiv.appendChild(typingNode);
+          } else if (currentNode.nodeType === Node.ELEMENT_NODE) {
+            if (currentNode.tagName === 'BR') {
+              typingDiv.appendChild(document.createElement('br'));
+              // Continue to next node
+              setTimeout(typeNext, 0);
+              return;
+            } else {
+              typingNode = currentNode.cloneNode(false); // shallow clone
+              typingDiv.appendChild(typingNode);
+              currentWords = currentNode.textContent.split(/(\s+)/);
+            }
+          }
+          wordIdx = 0;
+        }
+        if (wordIdx < currentWords.length) {
+          if (typingNode.nodeType === Node.TEXT_NODE) {
+            typingNode.textContent += currentWords[wordIdx];
+          } else {
+            typingNode.appendChild(document.createTextNode(currentWords[wordIdx]));
+          }
+          wordIdx++;
+          scrollChatToBottom();
+          // --- Scroll logic for 60px from chat-input, never below chat-input ---
+          const chatInput = document.querySelector('.chat-input');
+          if (chatInput) {
+            const typingRect = typingDiv.getBoundingClientRect();
+            const inputRect = chatInput.getBoundingClientRect();
+            // If the bottom of the typingDiv would go below the top of chat-input, scroll so it stays above
+            if (typingRect.bottom > inputRect.top - 60) {
+              // Scroll so last line is 60px above chat-input, but never below
+              const offset = typingRect.bottom - (inputRect.top - 60);
+              if (offset > 0) {
+                window.scrollBy({
+                  top: offset,
+                  left: 0,
+                  behavior: 'auto'
+                });
+              }
+            }
+          }
+          setTimeout(typeNext, currentWords[wordIdx-1].trim() === '' ? 0 : 55);
+        } else {
+          // Move to next node
+          setTimeout(typeNext, 0);
+        }
+      }
+      typeNext();
     }
 
     // Ensure chat area always leaves 70px above chat-input
@@ -117,12 +221,12 @@ document.addEventListener('DOMContentLoaded', () => {
           throw new Error('Invalid server response');
         }
       })
-      .then(data => {
+      .then((data) => {
         if (data && data.response) {
             const formattedText = formatResponse(data.response);
-            appendBotMessage(formattedText); // response should be HTML-formatted
+            appendBotMessageTyping(formattedText); // response with typing effect
         } else {
-          appendBotMessage("<p>Sorry, I didn't understand that. Please try again.</p>");
+          appendBotMessageTyping("<p>Sorry, I didn't understand that. Please try again.</p>");
         }
       })
       .catch(error => {
