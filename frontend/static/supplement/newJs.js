@@ -1,4 +1,4 @@
-  document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
     const inputField = document.getElementById('chatInputBox');
     const sendBtn = document.getElementById('chatInputBtn');
     // const chatWrapper = document.querySelector('.chat-wrapper');
@@ -16,14 +16,13 @@
         <i class="bi bi-pencil-square edit-icon ms-auto"></i>
       `;
       chatWrapper.appendChild(userDiv);
-      chatWrapper.scrollTop = chatWrapper.scrollHeight;
+      scrollChatToBottom();
     }
 
     // Add bot message and actions to chat
     function appendBotMessage(htmlContent) {
       const botMsg = document.createElement('div');
       botMsg.className = 'bot-msg bot-msg-content';
-
       botMsg.innerHTML = `
         <div class="bot-header">GALGOTIAS AI-Bot</div>
         <div>${htmlContent}</div>
@@ -44,6 +43,13 @@
         </div>
       `;
       chatWrapper.appendChild(botMsg);
+      scrollChatToBottom();
+    }
+
+    // Ensure chat area always leaves 70px above chat-input
+    function scrollChatToBottom() {
+      // Add enough bottom padding to chatWrapper
+      chatWrapper.style.paddingBottom = '90px'; // 70px + 20px buffer
       chatWrapper.scrollTop = chatWrapper.scrollHeight;
     }
 
@@ -85,22 +91,38 @@
       fetchBotResponse(message);
     }
 
+    // formating the response of the bot
+    function formatResponse(text) {
+        return text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<span class="subheading">$1</span>')
+        .replace(/\n/g, '<br>');
+    }
+    
     // Fetch bot response from backend
     function fetchBotResponse(userQuery) {
       fetch('/ask/', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ query: userQuery })
+        body: JSON.stringify({ message: userQuery }) // Fix: use 'message' key to match backend
       })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error('Network response was not ok');
+        const contentType = res.headers.get('content-type');
+        if (contentType && contentType.indexOf('application/json') !== -1) {
+          return res.json();
+        } else {
+          throw new Error('Invalid server response');
+        }
+      })
       .then(data => {
         if (data && data.response) {
-          appendBotMessage(data.response); // response should be HTML-formatted
+            const formattedText = formatResponse(data.response);
+            appendBotMessage(formattedText); // response should be HTML-formatted
         } else {
-          appendBotMessage("<p>Sorry, I didn't understand that. Please </p>");
+          appendBotMessage("<p>Sorry, I didn't understand that. Please try again.</p>");
         }
       })
       .catch(error => {
