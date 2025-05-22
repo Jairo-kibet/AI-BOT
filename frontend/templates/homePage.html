@@ -401,6 +401,25 @@
         ::-webkit-scrollbar-track {
           background: #f2f2f2;
         }
+        .slide-fade-up {
+            transition: opacity 0.45s cubic-bezier(0.4,0,0.2,1), transform 0.45s cubic-bezier(0.4,0,0.2,1);
+            opacity: 0 !important;
+            transform: translateY(-60px) scale(0.98);
+            pointer-events: none;
+        }
+        .chat-bubble-animate-in {
+            animation: chatBubbleFadeInUp 0.5s cubic-bezier(0.4,0,0.2,1);
+        }
+        @keyframes chatBubbleFadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(60px) scale(0.98);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
     </style>
     <style>
         /* Responsive Design */
@@ -623,7 +642,7 @@
         </div>
 
         <div class="cards-wrapper" id="cardsWrapperSection">
-            <div class="left-cards">
+            <div class="left-cards" id="leftCardsSection">
                 <div class="cards-viewer" style="display: flex; justify-content: center; align-items: center; width: 100%;">
                     <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; width: 100%;">
                         <div class="feature-card">
@@ -703,10 +722,10 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- Chat container styled to match cards-wrapper area -->
-        <div id="chatContainer" style="display:none;">
-            <!-- Chat UI will be injected here -->
+            <!-- Chat area for displaying user queries -->
+            <div id="chatArea" style="display:none; flex-direction:column; gap:10px; align-items:left; width:60%;">
+                
+            </div>
         </div>
     </div>
     <div class="chat-input">
@@ -717,84 +736,80 @@
 </div>
 <script src="{% static 'js/scripts.js' %}"></script>
 <script>
-// Chat input logic for dynamic chat UI loading
-function showChatUI() {
-    const centerText = document.getElementById('centerTextSection');
-    const cardsWrapper = document.getElementById('cardsWrapperSection');
-    const chatContainer = document.getElementById('chatContainer');
-    // Animate out the intro sections
-    if (centerText) centerText.classList.add('transition-out');
-    if (cardsWrapper) cardsWrapper.classList.add('transition-out');
-    setTimeout(() => {
-        if (centerText) centerText.style.display = 'none';
-        if (cardsWrapper) cardsWrapper.style.display = 'none';
-        chatContainer.style.display = 'flex';
-        chatContainer.style.justifyContent = 'center';
-        chatContainer.style.alignItems = 'flex-start';
-        chatContainer.innerHTML = '';
-        const chatBox = document.createElement('div');
-        chatBox.className = 'cards-wrapper chat-animate-in';
-        chatBox.style.padding = '32px 0 32px 0';
-        chatBox.style.width = '60%';
-        chatBox.style.maxWidth = '700px';
-        chatBox.style.margin = '0 auto';
-        chatBox.style.minHeight = '500px';
-        chatBox.style.overflow = 'hidden';
-        chatBox.style.position = 'relative';
-        chatBox.style.display = 'block'; // changed from flex to block for stability
-        chatBox.style.paddingBottom = '80px'; // Add extra bottom padding for scroll buffer
-        chatContainer.appendChild(chatBox);
-        if (!chatBox.innerHTML.trim()) {
-            fetch('{% url "chatindex" %}')
-                .then(res => res.text())
-                .then(html => {
-                    const tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = html;
-                    const chatWrapper = tempDiv.querySelector('.chat-wrapper');
-                    if (chatWrapper) {
-                        chatBox.innerHTML = '';
-                        chatBox.appendChild(chatWrapper);
-                        chatWrapper.style.width = '100%';
-                        chatWrapper.style.maxWidth = '100%';
-                        chatWrapper.style.background = 'transparent';
-                        chatWrapper.style.boxShadow = 'none';
-                        chatWrapper.style.borderRadius = '0';
-                        chatWrapper.style.padding = '0';
-                        chatWrapper.style.height = 'auto';
-                        chatWrapper.style.overflowY = 'visible';
-                        chatWrapper.style.overflowX = 'hidden';
-                        chatWrapper.style.position = 'relative';
-                        chatWrapper.style.display = 'block';
-                        // Add bottom margin to last child for scroll buffer
-                        const children = chatWrapper.children;
-                        if (children.length > 0) {
-                            children[children.length - 1].style.marginBottom = '50px';
-                        }
-                    } else {
-                        chatBox.innerHTML = '<div style="color:red;">Failed to load chat UI.</div>';
-                    }
-                });
-        }
-    }, 400); // Wait for transition-out to finish
-}
-const chatInput = document.getElementById('chatInputBox');
-const chatBtn = document.getElementById('chatInputBtn');
-chatInput.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter' && chatInput.value.trim()) {
-        showChatUI();
-    }
-});
-chatBtn.addEventListener('click', function() {
-    if (chatInput.value.trim()) {
-        showChatUI();
-    }
-});
+
 // Ensure sidebar is open on page load
 window.addEventListener('DOMContentLoaded', function() {
     document.getElementById('sidebarPanel').classList.add('sidebar-visible');
     document.getElementById('sidebarOverlay').classList.add('sidebar-visible');
     document.querySelector('.main-container').classList.add('sidebar-open');
 });
+
+// Chat input logic
+const chatInput = document.getElementById('chatInputBox');
+const chatBtn = document.getElementById('chatInputBtn');
+const leftCards = document.getElementById('leftCardsSection');
+const centerText = document.getElementById('centerTextSection');
+const chatArea = document.getElementById('chatArea');
+
+function showChatMessage(msg) {
+    // If cards are visible, animate them out and show chat area with animation
+    if (leftCards.style.display !== 'none' && centerText.style.display !== 'none') {
+        leftCards.classList.add('slide-fade-up');
+        centerText.classList.add('slide-fade-up');
+        let transitioned = false;
+        function onTransitionEnd() {
+            if (transitioned) return;
+            transitioned = true;
+            leftCards.style.display = 'none';
+            centerText.style.display = 'none';
+            chatArea.style.display = 'flex';
+            leftCards.classList.remove('slide-fade-up');
+            centerText.classList.remove('slide-fade-up');
+            leftCards.removeEventListener('transitionend', onTransitionEnd);
+            centerText.removeEventListener('transitionend', onTransitionEnd);
+            // First chat bubble with animation
+            appendChatBubble(msg, true);
+        }
+        leftCards.addEventListener('transitionend', onTransitionEnd);
+        centerText.addEventListener('transitionend', onTransitionEnd);
+    } else {
+        // Subsequent chat bubbles, no animation or with a lighter animation
+        appendChatBubble(msg, false);
+    }
+}
+
+function appendChatBubble(msg, animate) {
+    const bubble = document.createElement('div');
+    bubble.style.color = 'black';
+    bubble.style.borderRadius = '18px 18px 4px 18px';
+    bubble.style.margin = '6px 0';
+    bubble.style.width = 'fit-content';
+    bubble.style.maxWidth = '90%';
+    bubble.style.fontSize = '15px';
+    bubble.style.boxShadow = '0 2px 8px rgba(92,59,255,0.10)';
+    bubble.style.textAlign = 'left';
+    bubble.textContent = msg;
+    if (animate) {
+        bubble.classList.add('chat-bubble-animate-in');
+    }
+    chatArea.appendChild(bubble);
+    chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+function handleChatInput() {
+    const val = chatInput.value.trim();
+    if(val) {
+        showChatMessage(val);
+        chatInput.value = '';
+    }
+}
+
+chatInput.addEventListener('keydown', function(e) {
+    if(e.key === 'Enter') {
+        handleChatInput();
+    }
+});
+chatBtn.addEventListener('click', handleChatInput);
 </script>
 </body>
 </html>
