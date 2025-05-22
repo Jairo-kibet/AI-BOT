@@ -751,6 +751,40 @@ const leftCards = document.getElementById('leftCardsSection');
 const centerText = document.getElementById('centerTextSection');
 const chatArea = document.getElementById('chatArea');
 
+function appendBotBubbleTyping(msg) {
+    if (!chatArea) return;
+    const bubble = document.createElement('div');
+    bubble.style.borderRadius = '18px 18px 4px 18px';
+    bubble.style.margin = '6px 0';
+    bubble.style.width = 'fit-content';
+    bubble.style.maxWidth = '80%';
+    bubble.style.fontSize = '15px';
+    bubble.style.textAlign = 'left';
+    bubble.style.background = '#f3ecfc';
+    bubble.style.color = '#222';
+    bubble.style.alignSelf = 'flex-start';
+    bubble.style.marginLeft = '40px';
+    bubble.style.marginRight = 'auto';
+    bubble.style.borderLeft = '3px solid #a45cff';
+    bubble.style.wordBreak = 'break-word';
+    bubble.style.whiteSpace = 'pre-line';
+    bubble.textContent = '';
+    chatArea.appendChild(bubble);
+    chatArea.scrollTop = chatArea.scrollHeight;
+    // Typing effect: word by word
+    const words = msg.split(' ');
+    let i = 0;
+    function typeWord() {
+        if (i < words.length) {
+            bubble.textContent += (i === 0 ? '' : ' ') + words[i];
+            i++;
+            chatArea.scrollTop = chatArea.scrollHeight;
+            setTimeout(typeWord, 60);
+        }
+    }
+    typeWord();
+}
+
 function showChatMessage(msg) {
     // If cards are visible, animate them out and show chat area with animation
     if (leftCards.style.display !== 'none' && centerText.style.display !== 'none') {
@@ -768,32 +802,106 @@ function showChatMessage(msg) {
             leftCards.removeEventListener('transitionend', onTransitionEnd);
             centerText.removeEventListener('transitionend', onTransitionEnd);
             // First chat bubble with animation
-            appendChatBubble(msg, true);
+            appendChatBubble(msg, true, 'user');
+            // Bot response with typing effect
+            setTimeout(function() {
+                appendBotBubbleTyping(getBotResponse(msg));
+            }, 700);
         }
         leftCards.addEventListener('transitionend', onTransitionEnd);
         centerText.addEventListener('transitionend', onTransitionEnd);
     } else {
-        // Subsequent chat bubbles, no animation or with a lighter animation
-        appendChatBubble(msg, false);
+        // User message
+        appendChatBubble(msg, true, 'user');
+        // Bot response with typing effect
+        setTimeout(function() {
+            appendBotBubbleTyping(getBotResponse(msg));
+        }, 700);
     }
 }
 
-function appendChatBubble(msg, animate) {
+function appendChatBubble(msg, animate, sender) {
+    const bubbleWrapper = document.createElement('div');
+    bubbleWrapper.style.display = 'flex';
+    bubbleWrapper.style.alignItems = 'flex-start';
+    bubbleWrapper.style.gap = '10px';
+    bubbleWrapper.style.maxWidth = '80%';
+
+    let profileIcon = null;
+    let editIcon = null;
+
+    if (sender === 'user') {
+        // Profile icon (user)
+        profileIcon = document.createElement('span');
+        profileIcon.innerHTML = '<i class="fa fa-user-circle" style="font-size:28px;color:#5c3bff; top: 80%;"></i>';
+        profileIcon.style.flex = '10px 0 auto';
+        bubbleWrapper.appendChild(profileIcon);
+    }
+
     const bubble = document.createElement('div');
-    bubble.style.color = 'black';
     bubble.style.borderRadius = '18px 18px 4px 18px';
     bubble.style.margin = '6px 0';
     bubble.style.width = 'fit-content';
-    bubble.style.maxWidth = '90%';
+    bubble.style.maxWidth = '70vw';
     bubble.style.fontSize = '15px';
-    bubble.style.boxShadow = '0 2px 8px rgba(92,59,255,0.10)';
     bubble.style.textAlign = 'left';
+    bubble.style.wordBreak = 'break-word';
+    bubble.style.whiteSpace = 'pre-line';
     bubble.textContent = msg;
+    if (sender === 'user') {
+        bubble.style.background = '#5c3bff';
+        bubble.style.color = 'black';
+        bubble.style.alignSelf = 'flex-start';
+        bubble.style.marginLeft = '0';
+        bubble.style.marginRight = 'auto';
+        bubble.style.padding = '10px 16px 10px 16px';
+    } else {
+        bubble.style.background = '#f3ecfc';
+        bubble.style.color = '#222';
+        bubble.style.alignSelf = 'flex-start';
+        bubble.style.marginLeft = '40px';
+        bubble.style.marginRight = 'auto';
+        bubble.style.border = '3px solid rgb(47, 25, 73)';
+        bubble.style.padding = '10px 16px 10px 16px';
+        bubble.textContent = msg;
+    }
     if (animate) {
         bubble.classList.add('chat-bubble-animate-in');
     }
-    chatArea.appendChild(bubble);
+    bubbleWrapper.appendChild(bubble);
+
+    // Add like icon just below the bot bubble
+    if (sender === 'bot') {
+        const likeRow = document.createElement('div');
+        likeRow.style.display = 'flex';
+        likeRow.style.justifyContent = 'center';
+        likeRow.style.alignItems = 'center';
+        likeRow.style.marginTop = '2px';
+        likeRow.style.marginBottom = '6px';
+        likeRow.innerHTML = '<i class="fa fa-thumbs-up" style="font-size:20px;color:#5c3bff;cursor:pointer;"></i>';
+        bubbleWrapper.appendChild(likeRow);
+    }
+
+    if (sender === 'user') {
+        // Edit icon at the end
+        editIcon = document.createElement('span');
+        editIcon.innerHTML = '<i class="fa fa-edit" style="font-size:18px;color:#fff;cursor:pointer;"></i>';
+        editIcon.style.alignSelf = 'center';
+        editIcon.style.marginLeft = '8px';
+        editIcon.title = 'Edit message';
+        // Add click handler for edit (optional: implement edit logic)
+        // editIcon.onclick = function() { ... };
+        bubbleWrapper.appendChild(editIcon);
+    }
+
+    chatArea.appendChild(bubbleWrapper);
     chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+// Dummy bot response function (replace with real API call)
+function getBotResponse(userMsg) {
+    // You can replace this with an actual API call/logic
+    return "This is a sample response to: " + userMsg;
 }
 
 function handleChatInput() {
@@ -803,6 +911,35 @@ function handleChatInput() {
         chatInput.value = '';
     }
 }
+
+
+{% comment %} -------------------------------------------------- Send Message Function Starts ---------------------------------------------------------------------------------------------- {% endcomment %}
+function sendMessage() {
+    const message = inputField.value.trim();
+    if (!message) return;
+    const chatId = getCurrentChatId();
+    appendMessage(message, animate, "user");
+    inputField.value = "";
+    showTyping();
+    fetch("/ask/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCookie("csrftoken"),
+      },
+      body: JSON.stringify({ message, chat_id: chatId })
+    })
+    .then(res => res.json())
+    .then(data => {
+      removeTyping();
+      appendMessage(data.response, "bot", data.timestamp || new Date().toISOString());
+    })
+    .catch(() => {
+      removeTyping();
+      appendMessage("Oops! Something went wrong. Please try again.", "bot", new Date().toISOString());
+    });
+}
+{% comment %} -------------------------------------------------- Send Message Function Ends ---------------------------------------------------------------------------------------------- {% endcomment %}
 
 chatInput.addEventListener('keydown', function(e) {
     if(e.key === 'Enter') {
