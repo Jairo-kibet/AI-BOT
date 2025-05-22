@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>Galgotia AI Bot</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -363,6 +364,26 @@
             cursor: pointer;
         }
 
+        /* Animation for chat transition */
+        @keyframes chatFadeInUp {
+          0% {
+            opacity: 0;
+            transform: translateY(60px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .cards-wrapper.transition-out, .center-text.transition-out {
+          transition: opacity 0.4s, transform 0.4s;
+          opacity: 0;
+          transform: translateY(-40px);
+          pointer-events: none;
+        }
+        #chatContainer .cards-wrapper.chat-animate-in {
+          animation: chatFadeInUp 0.5s cubic-bezier(0.4,0,0.2,1);
+        }
     </style>
     <style>
         /* Responsive Design */
@@ -578,101 +599,166 @@
 
     <div class="login-banner">Log in as student</div>
 
-    <div class="center-text">
-        <div class="tag"  id="centerTextTag"><span>GALGOTIA’s</span> Ai-Bot</div>
-        <h1>Good day! How may i assist you ?</h1>
-    </div>
+    <div id="mainContentArea">
+        <div class="center-text" id="centerTextSection">
+            <div class="tag"  id="centerTextTag"><span>GALGOTIA’s</span> Ai-Bot</div>
+            <h1>Good day! How may i assist you ?</h1>
+        </div>
 
-    <div class="cards-wrapper">
-        <div class="left-cards">
-            <div class="cards-viewer" style="display: flex; justify-content: center; align-items: center; width: 100%;">
-                <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; width: 100%;">
-                    <div class="feature-card">
-                        <div>
-                            <i class="fas fa-globe"></i>
+        <div class="cards-wrapper" id="cardsWrapperSection">
+            <div class="left-cards">
+                <div class="cards-viewer" style="display: flex; justify-content: center; align-items: center; width: 100%;">
+                    <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; width: 100%;">
+                        <div class="feature-card">
+                            <div>
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            <div>
+                                <h4>Explore</h4>
+                                <p>Discover what this chatbot can assist you with.</p>
+                            </div>
                         </div>
-                        <div>
-                            <h4>Explore</h4>
-                            <p>Discover what this chatbot can assist you with.</p>
+                        <div class="card-divider" style="display: flex; align-items: center; justify-content: center;">
+                            <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; height: 60px; min-height: 20px; margin: 0 20px;">
+                                <div style="width: 4px; height: 28px; background: #cccccc; border-radius: 2px; margin: 0 0.5px;"></div>
+                                <div style="width: 4px; height: 28px; background: #cccccc; border-radius: 2px; margin: 0 0.5px;"></div>
+                                <div style="width: 4px; height: 28px; background: #cccccc; border-radius: 2px; margin: 0 0.5px;"></div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="card-divider" style="display: flex; align-items: center; justify-content: center;">
-                        <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; height: 60px; min-height: 20px; margin: 0 20px;">
-                            <div style="width: 4px; height: 28px; background: #cccccc; border-radius: 2px; margin: 0 0.5px;"></div>
-                            <div style="width: 4px; height: 28px; background: #cccccc; border-radius: 2px; margin: 0 0.5px;"></div>
-                            <div style="width: 4px; height: 28px; background: #cccccc; border-radius: 2px; margin: 0 0.5px;"></div>
+                        <div class="right-cards" style="justify-content: center; align-items: center; display: flex; height: auto;">
+                            <div class="info-card">"Programs Offered"<p>Learn about undergraduate, postgraduate, and diploma programs.</p>
+                                <span>&rarr;</span></div>
+                            <div class="info-card">"Admission Process"<p>Step-by-step guide to applying to our college.</p>
+                                <span>&rarr;</span></div>
                         </div>
-                    </div>
-                    <div class="right-cards" style="justify-content: center; align-items: center; display: flex; height: auto;">
-                        <div class="info-card">"Programs Offered"<p>Learn about undergraduate, postgraduate, and diploma programs.</p>
-                            <span>&rarr;</span></div>
-                        <div class="info-card">"Admission Process"<p>Step-by-step guide to applying to our college.</p>
-                            <span>&rarr;</span></div>
                     </div>
                 </div>
-            </div>
-            <div class="cards-viewer" style="display: flex; justify-content: center; align-items: center; width: 100%;">
-                <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; width: 100%;">
-                    <div class="feature-card">
-                        <div>
-                            <i class="fas fa-bolt"></i>
+                <div class="cards-viewer" style="display: flex; justify-content: center; align-items: center; width: 100%;">
+                    <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; width: 100%;">
+                        <div class="feature-card">
+                            <div>
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <div>
+                                <h4>Capabilities</h4>
+                                <p>Here’s what the chatbot can help you with.</p>
+                            </div>
                         </div>
-                        <div>
-                            <h4>Capabilities</h4>
-                            <p>Here’s what the chatbot can help you with.</p>
+                        <div class="card-divider" style="display: flex; align-items: center; justify-content: center;">
+                            <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; height: 60px; min-height: 20px; margin: 0 20px;">
+                                <div style="width: 4px; height: 28px; background: #cccccc; border-radius: 2px; margin: 0 0.5px;"></div>
+                                <div style="width: 4px; height: 28px; background: #cccccc; border-radius: 2px; margin: 0 0.5px;"></div>
+                                <div style="width: 4px; height: 28px; background: #cccccc; border-radius: 2px; margin: 0 0.5px;"></div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="card-divider" style="display: flex; align-items: center; justify-content: center;">
-                        <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; height: 60px; min-height: 20px; margin: 0 20px;">
-                            <div style="width: 4px; height: 28px; background: #cccccc; border-radius: 2px; margin: 0 0.5px;"></div>
-                            <div style="width: 4px; height: 28px; background: #cccccc; border-radius: 2px; margin: 0 0.5px;"></div>
-                            <div style="width: 4px; height: 28px; background: #cccccc; border-radius: 2px; margin: 0 0.5px;"></div>
+                        <div class="right-cards" style="justify-content: center; align-items: center; display: flex; height: auto;">
+                            <div class="info-card">"Explain"<p>Admission criteria for B'tech and MBA programs.</p>
+                                <span>&rarr;</span></div>
+                            <div class="info-card">"Remind"<p>Key deadlines for applications and entrance exams.</p>
+                                <span>&rarr;</span></div>
                         </div>
-                    </div>
-                    <div class="right-cards" style="justify-content: center; align-items: center; display: flex; height: auto;">
-                        <div class="info-card">"Explain"<p>Admission criteria for B'tech and MBA programs.</p>
-                            <span>&rarr;</span></div>
-                        <div class="info-card">"Remind"<p>Key deadlines for applications and entrance exams.</p>
-                            <span>&rarr;</span></div>
                     </div>
                 </div>
-            </div>
-            <div class="cards-viewer" style="display: flex; justify-content: center; align-items: center; width: 100%;">
-                <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; width: 100%;">
-                    <div class="feature-card">
-                        <div>
-                            <i class="fas fa-exclamation-circle"></i>
+                <div class="cards-viewer" style="display: flex; justify-content: center; align-items: center; width: 100%;">
+                    <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; width: 100%;">
+                        <div class="feature-card">
+                            <div>
+                                <i class="fas fa-exclamation-circle"></i>
+                            </div>
+                            <div>
+                                <h4>Limitation</h4>
+                                <p>Please note these current limits.</p>
+                            </div>
                         </div>
-                        <div>
-                            <h4>Limitation</h4>
-                            <p>Please note these current limits.</p>
+                        <div class="card-divider" style="display: flex; align-items: center; justify-content: center;">
+                            <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; height: 60px; min-height: 20px; margin: 0 20px;">
+                                <div style="width: 4px; height: 28px; background: #cccccc; border-radius: 2px; margin: 0 0.5px;"></div>
+                                <div style="width: 4px; height: 28px; background: #cccccc; border-radius: 2px; margin: 0 0.5px;"></div>
+                                <div style="width: 4px; height: 28px; background: #cccccc; border-radius: 2px; margin: 0 0.5px;"></div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="card-divider" style="display: flex; align-items: center; justify-content: center;">
-                        <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; height: 60px; min-height: 20px; margin: 0 20px;">
-                            <div style="width: 4px; height: 28px; background: #cccccc; border-radius: 2px; margin: 0 0.5px;"></div>
-                            <div style="width: 4px; height: 28px; background: #cccccc; border-radius: 2px; margin: 0 0.5px;"></div>
-                            <div style="width: 4px; height: 28px; background: #cccccc; border-radius: 2px; margin: 0 0.5px;"></div>
+                        <div class="right-cards" style="justify-content: center; align-items: center; display: flex; height: auto;">
+                            <div class="info-card">"May"<p>Occasionally provide outdated or incorrect event info.</p>
+                                <span>&rarr;</span></div>
+                            <div class="info-card">"Limited"<p>May not reflect policy changes after [month/year].</p>
+                                <span>&rarr;</span></div>
                         </div>
-                    </div>
-                    <div class="right-cards" style="justify-content: center; align-items: center; display: flex; height: auto;">
-                        <div class="info-card">"May"<p>Occasionally provide outdated or incorrect event info.</p>
-                            <span>&rarr;</span></div>
-                        <div class="info-card">"Limited"<p>May not reflect policy changes after [month/year].</p>
-                            <span>&rarr;</span></div>
                     </div>
                 </div>
             </div>
         </div>
+        <!-- Chat container styled to match cards-wrapper area -->
+        <div id="chatContainer" style="display:none;">
+            <!-- Chat UI will be injected here -->
+        </div>
     </div>
     <div class="chat-input">
         <i class="bi bi-soundwave"></i>
-        <input type="text" placeholder="Type your question here...">
-        <button>&#10148;</button>
+        <input type="text" id="chatInputBox" placeholder="Type your question here...">
+        <button type="submit" id="chatInputBtn">&#10148;</button>
     </div>
 </div>
-<script src="{% static 'js/scripts.js' %}">
-    
+<script src="{% static 'js/scripts.js' %}"></script>
+<script>
+// Chat input logic for dynamic chat UI loading
+function showChatUI() {
+    const centerText = document.getElementById('centerTextSection');
+    const cardsWrapper = document.getElementById('cardsWrapperSection');
+    const chatContainer = document.getElementById('chatContainer');
+    // Animate out the intro sections
+    if (centerText) centerText.classList.add('transition-out');
+    if (cardsWrapper) cardsWrapper.classList.add('transition-out');
+    setTimeout(() => {
+        if (centerText) centerText.style.display = 'none';
+        if (cardsWrapper) cardsWrapper.style.display = 'none';
+        chatContainer.style.display = 'flex';
+        chatContainer.style.justifyContent = 'center';
+        chatContainer.style.alignItems = 'flex-start';
+        chatContainer.innerHTML = '';
+        const chatBox = document.createElement('div');
+        chatBox.className = 'cards-wrapper chat-animate-in';
+        chatBox.style.padding = '32px 0 32px 0';
+        chatBox.style.width = '60%';
+        chatBox.style.maxWidth = '700px';
+        chatBox.style.margin = '0 auto';
+        chatBox.style.minHeight = '300px';
+        chatContainer.appendChild(chatBox);
+        if (!chatBox.innerHTML.trim()) {
+            fetch('{% url "chatindex" %}')
+                .then(res => res.text())
+                .then(html => {
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = html;
+                    const chatWrapper = tempDiv.querySelector('.chat-wrapper');
+                    if (chatWrapper) {
+                        chatBox.innerHTML = '';
+                        chatBox.appendChild(chatWrapper);
+                        chatWrapper.style.width = '100%';
+                        chatWrapper.style.maxWidth = '100%';
+                        chatWrapper.style.background = 'transparent';
+                        chatWrapper.style.boxShadow = 'none';
+                        chatWrapper.style.borderRadius = '0';
+                        chatWrapper.style.padding = '0';
+                        chatWrapper.style.height = 'auto';
+                    } else {
+                        chatBox.innerHTML = '<div style="color:red;">Failed to load chat UI.</div>';
+                    }
+                });
+        }
+    }, 400); // Wait for transition-out to finish
+}
+const chatInput = document.getElementById('chatInputBox');
+const chatBtn = document.getElementById('chatInputBtn');
+chatInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && chatInput.value.trim()) {
+        showChatUI();
+    }
+});
+chatBtn.addEventListener('click', function() {
+    if (chatInput.value.trim()) {
+        showChatUI();
+    }
+});
 </script>
 </body>
 </html>
