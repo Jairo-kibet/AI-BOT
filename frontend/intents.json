@@ -1,0 +1,78 @@
+{
+  "intents": [
+    {
+      "tag": "greeting",
+      "patterns": [
+        "hello",
+        "hi", "hii",
+        "hey there",
+        "howdy",
+        "what's up", "whats up",
+        "how are you",
+        "how's it going",
+        "hey",
+        "greetings",
+        "good morning",
+        "good afternoon",
+        "good evening"
+      ],
+      "response": "Hello! How can I assist you with your college, university, or school enquiry today?"
+    },
+    {
+      "tag": "help",
+      "patterns": [
+        "how can you help",
+        "what can you do",
+        "about yourself",
+        "who are you",
+        "what is your purpose",
+        "tell me about yourself",
+        "help me",
+        "your work",
+        "what is your job",
+        "what is your role",
+        "what is your function",
+        "how you behave",
+        "what is your task",
+        "what do you do"
+      ],
+      "response": "I am a college enquiry assistant chatbot. I can help you with questions about admissions, courses, fees, campus, faculty, hostels, exams, results, syllabus, and departments for colleges, universities, or schools. Just ask me anything related to these topics!"
+    },
+    {
+      "tag": "admission",
+      "patterns": [
+        "How to apply?",
+        "Tell me about admission process",
+        "How do I get admission?"
+      ],
+      "response": "To apply, visit our website and fill out the admission form online. Admission is based on merit and entrance test."
+    },
+    {
+      "tag": "courses",
+      "patterns": [
+        "What courses are offered?",
+        "List of available programs",
+        "Which degrees do you offer?"
+      ],
+      "response": "We offer BCA, BBA, BSc IT, BCom, and MCA programs."
+    },
+    {
+      "tag": "fees",
+      "patterns": [
+        "What is the fee structure?",
+        "How much are the fees?",
+        "Tell me about course fees"
+      ],
+      "response": "The fee for BCA is ₹50,000/year, and for MCA is ₹70,000/year."
+    },
+    {
+      "tag": "hostel",
+      "patterns": [
+        "Is hostel available?",
+        "Hostel facility?",
+        "Accommodation info"
+      ],
+      "response": "Yes, we provide hostel facilities with mess and WiFi. The fee is ₹30,000 per semester."
+    }
+  ]
+}
