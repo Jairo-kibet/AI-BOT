@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
       userDiv.innerHTML = `
         <i class="bi bi-person-circle user-icon"></i>
         <p class="flex-grow-1">${text}</p>
-        <i class="bi bi-pencil-square edit-icon ms-auto"></i>
+        <i class="bi bi-pencil-square edit-icon ms-auto" style="cursor:pointer;"></i>
       `;
       chatWrapper.appendChild(userDiv);
       // --- Ensure user message is always visible above chat-input ---
@@ -34,6 +34,59 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
       scrollChatToBottom();
+      // --- Edit icon logic ---
+      const editIcon = userDiv.querySelector('.edit-icon');
+      if (editIcon) {
+        editIcon.addEventListener('click', function() {
+          // Prevent multiple edit boxes
+          if (userDiv.querySelector('.edit-box')) return;
+          const originalText = userDiv.querySelector('p').textContent;
+          // Hide the p and show textarea
+          userDiv.querySelector('p').style.display = 'none';
+          editIcon.style.display = 'none';
+          // Create edit box
+          const editBox = document.createElement('div');
+          editBox.className = 'edit-box';
+          editBox.style.position = 'relative';
+          editBox.innerHTML = `
+            <textarea class="form-control" style="min-height:40px;resize:vertical;">${originalText}</textarea>
+            <div style="position:absolute;right:0;bottom:-35px;display:flex;gap:8px;">
+              <button class="btn btn-secondary btn-sm cancel-edit">Cancel</button>
+              <button class="btn btn-primary btn-sm ask-edit">Ask</button>
+            </div>
+          `;
+          userDiv.appendChild(editBox);
+          const textarea = editBox.querySelector('textarea');
+          textarea.focus();
+          // Cancel button logic
+          editBox.querySelector('.cancel-edit').onclick = function() {
+            editBox.remove();
+            userDiv.querySelector('p').style.display = '';
+            editIcon.style.display = '';
+          };
+          // Ask button logic
+          editBox.querySelector('.ask-edit').onclick = function() {
+            const newText = textarea.value.trim();
+            if (!newText) return;
+            // Update user message
+            userDiv.querySelector('p').textContent = newText;
+            editBox.remove();
+            userDiv.querySelector('p').style.display = '';
+            editIcon.style.display = '';
+            // Remove all messages below this userDiv
+            let next = userDiv.nextElementSibling;
+            while (next) {
+              const toRemove = next;
+              next = next.nextElementSibling;
+              toRemove.remove();
+            }
+            // Get active chatId (if needed)
+            const chatId = (typeof getActiveChatId === 'function') ? getActiveChatId() : null;
+            // Call fetchBotResponse with the new user query and chatId
+            fetchBotResponse(newText, chatId);
+          };
+        });
+      }
     }
 
     // Add bot message and actions to chat with typing effect
@@ -49,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <span style="margin: 0; color: #bbb;">|</span>
             <i class="bi bi-hand-thumbs-down" title="Dislike"></i>
             <span style="margin: 0; color: #bbb;">|</span>
-            <i class="bi bi-clipboard" title="Copy"></i>
+            <i class="bi bi-clipboard copy-bot-response" title="Copy"></i>
           </div>
           <button class="regenerate-btn">
             <i class="bi bi-arrow-repeat"> Regenerate</i>
@@ -88,6 +141,54 @@ document.addEventListener('DOMContentLoaded', () => {
                   behavior: 'auto'
                 });
               }
+            }
+
+            // Add copy event for this bot response
+            const copyBtn = botMsg.querySelector('.copy-bot-response');
+            if (copyBtn) {
+              copyBtn.addEventListener('click', function() {
+                // Get the HTML content of the bot response
+                const temp = document.createElement('div');
+                temp.innerHTML = typingDiv.innerHTML;
+                // Convert <br> to newlines and strip HTML tags for plain text copy
+                let text = temp.innerHTML.replace(/<br\s*\/?>(\s*)/gi, '\n');
+                text = text.replace(/<[^>]+>/g, '');
+                // Copy to clipboard
+                navigator.clipboard.writeText(text).then(() => {
+                  copyBtn.classList.add('copied');
+                  copyBtn.title = 'Copied!';
+                  setTimeout(() => {
+                    copyBtn.classList.remove('copied');
+                    copyBtn.title = 'Copy';
+                  }, 1200);
+                });
+              });
+            }
+            // Add regenerate event for this bot response
+            const regenerateBtn = botMsg.querySelector('.regenerate-btn');
+            if (regenerateBtn) {
+              regenerateBtn.addEventListener('click', function() {
+                // Find the user message just before this bot message
+                let prev = botMsg.previousElementSibling;
+                let userMsg = null;
+                while (prev) {
+                  if (prev.classList.contains('user-msg')) {
+                    userMsg = prev;
+                    break;
+                  }
+                  prev = prev.previousElementSibling;
+                }
+                if (userMsg) {
+                  // Get the user query text
+                  const userText = userMsg.querySelector('p')?.textContent || '';
+                  // Remove the current bot message
+                  botMsg.remove();
+                  // Get active chatId (if needed)
+                  const chatId = (typeof getActiveChatId === 'function') ? getActiveChatId() : null;
+                  // Call fetchBotResponse with the same user query and chatId
+                  fetchBotResponse(userText, chatId);
+                }
+              });
             }
             // Remove scrollIntoView to prevent jumping to top after typing
             // typingDiv.scrollIntoView({ behavior: 'auto', block: 'end' });
