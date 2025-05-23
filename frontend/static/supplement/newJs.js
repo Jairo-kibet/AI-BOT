@@ -44,25 +44,52 @@ document.addEventListener('DOMContentLoaded', () => {
           // Hide the p and show textarea
           userDiv.querySelector('p').style.display = 'none';
           editIcon.style.display = 'none';
-          // Create edit box
+          // Create edit box (styled like ChatGPT, expands full width with smooth transition)
           const editBox = document.createElement('div');
           editBox.className = 'edit-box';
-          editBox.style.position = 'relative';
+          editBox.style.display = 'flex';
+          editBox.style.flexDirection = 'column';
+          editBox.style.background = '#f7f7f8';
+          editBox.style.border = '1.5px solid #d9d9e3';
+          editBox.style.borderRadius = '12px';
+          editBox.style.padding = '12px 12px 8px 12px';
+          editBox.style.margin = '8px 0 0 10px';
+          editBox.style.boxShadow = '0 2px 8px rgba(0,0,0,0.04)';
+          editBox.style.width = '0';
+          editBox.style.maxWidth = '0';
+          editBox.style.opacity = '0';
+          editBox.style.transform = 'scaleX(0.90)';
+          editBox.style.transition = 'width 0.45s cubic-bezier(.4,1.3,.6,1), max-width 0.45s cubic-bezier(.4,1.3,.6,1), opacity 0.25s, transform 0.25s';
+          editBox.style.overflow = 'hidden';
+          userDiv.appendChild(editBox);
+          // Animate to full width after insertion
+          setTimeout(() => {
+            editBox.style.width = '90%';
+            editBox.style.maxWidth = '90%';
+            editBox.style.opacity = '1';
+            editBox.style.transform = 'scaleX(1)';
+          }, 10);
           editBox.innerHTML = `
-            <textarea class="form-control" style="min-height:40px;resize:vertical;">${originalText}</textarea>
-            <div style="position:absolute;right:0;bottom:-35px;display:flex;gap:8px;">
-              <button class="btn btn-secondary btn-sm cancel-edit">Cancel</button>
-              <button class="btn btn-primary btn-sm ask-edit">Ask</button>
+            <textarea class="form-control" style="min-height:32px;max-height:100px;resize:vertical;border:none;background:transparent;font-size:0.9rem;line-height:1.4;outline:none;box-shadow:none;padding:0;width:100%;color:#222;">${originalText}</textarea>
+            <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:8px;width:100%;">
+              <button class="cancel-edit" style="border-radius:7px;padding:4px 16px;font-weight:500;font-size:0.93rem;background:#f5f7fa;border:1.5px solid #bdbdbd;color:#1976d2;box-shadow:0 2px 8px rgba(0,123,255,0.10),0 1.5px 0 #e3e8f0 inset;transition:background 0.18s,border 0.18s,box-shadow 0.18s;cursor:pointer;">Cancel</button>
+              <button class="ask-edit" style="border-radius:7px;padding:4px 16px;font-weight:500;font-size:0.93rem;background:linear-gradient(90deg,#0056b3 0%,#007bff 100%);border:none;color:#fff;box-shadow:0 2px 8px rgba(0,123,255,0.18),0 1.5px 0 #e3e8f0 inset;transition:background 0.18s,box-shadow 0.18s;cursor:pointer;">Ask</button>
             </div>
           `;
-          userDiv.appendChild(editBox);
           const textarea = editBox.querySelector('textarea');
           textarea.focus();
+          textarea.select();
           // Cancel button logic
           editBox.querySelector('.cancel-edit').onclick = function() {
-            editBox.remove();
-            userDiv.querySelector('p').style.display = '';
-            editIcon.style.display = '';
+            editBox.style.opacity = '0';
+            editBox.style.transform = 'scaleX(0.90)';
+            editBox.style.width = '0';
+            editBox.style.maxWidth = '0';
+            setTimeout(() => {
+              editBox.remove();
+              userDiv.querySelector('p').style.display = '';
+              editIcon.style.display = '';
+            }, 350);
           };
           // Ask button logic
           editBox.querySelector('.ask-edit').onclick = function() {
@@ -70,20 +97,26 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!newText) return;
             // Update user message
             userDiv.querySelector('p').textContent = newText;
-            editBox.remove();
-            userDiv.querySelector('p').style.display = '';
-            editIcon.style.display = '';
-            // Remove all messages below this userDiv
-            let next = userDiv.nextElementSibling;
-            while (next) {
-              const toRemove = next;
-              next = next.nextElementSibling;
-              toRemove.remove();
-            }
-            // Get active chatId (if needed)
-            const chatId = (typeof getActiveChatId === 'function') ? getActiveChatId() : null;
-            // Call fetchBotResponse with the new user query and chatId
-            fetchBotResponse(newText, chatId);
+            editBox.style.opacity = '0';
+            editBox.style.transform = 'scaleX(0.90)';
+            editBox.style.width = '0';
+            editBox.style.maxWidth = '0';
+            setTimeout(() => {
+              editBox.remove();
+              userDiv.querySelector('p').style.display = '';
+              editIcon.style.display = '';
+              // Remove all messages below this userDiv
+              let next = userDiv.nextElementSibling;
+              while (next) {
+                const toRemove = next;
+                next = next.nextElementSibling;
+                toRemove.remove();
+              }
+              // Get active chatId (if needed)
+              const chatId = (typeof getActiveChatId === 'function') ? getActiveChatId() : null;
+              // Call fetchBotResponse with the new user query and chatId
+              fetchBotResponse(newText, chatId);
+            }, 350);
           };
         });
       }
@@ -373,5 +406,113 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   document.addEventListener('DOMContentLoaded', () => {
-
+    const inputField = document.getElementById('chatInputBox'); // Ensure inputField is available in this scope
+    // Soundwave icon as mic logic
+    const soundwaveIcon = document.querySelector('.soundwave-icon, .bi-soundwave, .bi-mic, .bi-mic-fill, #chatInputMic');
+    if (soundwaveIcon) {
+      soundwaveIcon.style.cursor = 'pointer';
+      soundwaveIcon.title = 'Speak your query';
+      let recognition;
+      if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        recognition.lang = 'en-US';
+        recognition.interimResults = true; // Enable interim results for live transcription
+        recognition.maxAlternatives = 1;
+        let listening = false;
+        let finalTranscript = '';
+        let userStopped = false; // Track if user manually stopped
+        soundwaveIcon.addEventListener('click', function() {
+          if (!listening) {
+            userStopped = false;
+            recognition.start();
+            soundwaveIcon.style.color = '#007bff';
+            soundwaveIcon.style.animation = 'pulse-mic 1s infinite';
+          } else {
+            userStopped = true;
+            recognition.stop();
+            soundwaveIcon.style.color = '';
+            soundwaveIcon.style.animation = '';
+          }
+          listening = !listening;
+        });
+        recognition.onresult = function(event) {
+          let interimTranscript = '';
+          for (let i = event.resultIndex; i < event.results.length; ++i) {
+            if (event.results[i].isFinal) {
+              finalTranscript += event.results[i][0].transcript;
+            } else {
+              interimTranscript += event.results[i][0].transcript;
+            }
+          }
+          if (inputField) {
+            const fullText = (finalTranscript + interimTranscript).replace(/^\s+/, '');
+            // If already animating, clear previous interval
+            if (window.speechLetterInterval) {
+              clearInterval(window.speechLetterInterval);
+              window.speechLetterInterval = null;
+            }
+            // Only animate if the text is different from what's already in the input
+            if (inputField.value !== fullText) {
+              let current = inputField.value;
+              let idx = current.length;
+              window.speechLetterInterval = setInterval(() => {
+                if (idx < fullText.length) {
+                  current += fullText[idx];
+                  inputField.value = current;
+                  idx++;
+                } else {
+                  clearInterval(window.speechLetterInterval);
+                  window.speechLetterInterval = null;
+                }
+              }, 22); // 22ms per letter for smooth effect
+            }
+          }
+        };
+        recognition.onend = function() {
+          soundwaveIcon.style.color = '';
+          soundwaveIcon.style.animation = '';
+          listening = false;
+          if (window.speechLetterInterval) {
+            clearInterval(window.speechLetterInterval);
+            window.speechLetterInterval = null;
+          }
+          // If user did not manually stop, restart recognition for continuous listening
+          if (!userStopped) {
+            recognition.start();
+            soundwaveIcon.style.color = '#007bff';
+            soundwaveIcon.style.animation = 'pulse-mic 1s infinite';
+            listening = true;
+            return;
+          }
+          finalTranscript = '';
+          // Ensure blinking cursor in input field after speech ends
+          if (inputField) {
+            inputField.focus();
+            // Move cursor to end
+            const val = inputField.value;
+            inputField.value = '';
+            inputField.value = val;
+          }
+        };
+        recognition.onerror = function() {
+          soundwaveIcon.style.color = '';
+          soundwaveIcon.style.animation = '';
+          listening = false;
+          userStopped = true;
+          finalTranscript = '';
+        };
+      } else {
+        soundwaveIcon.addEventListener('click', function() {
+          alert('Speech recognition is not supported in this browser.');
+        });
+      }
+      // Add keyframes for mic animation if not already present
+      if (!document.getElementById('mic-pulse-style')) {
+        const style = document.createElement('style');
+        style.id = 'mic-pulse-style';
+        style.innerHTML = `@keyframes pulse-mic {0%{box-shadow:0 0 0 0 #007bff44;}70%{box-shadow:0 0 0 10px #007bff00;}100%{box-shadow:0 0 0 0 #007bff44;}}`;
+        document.head.appendChild(style);
+      }
+    }
   });
