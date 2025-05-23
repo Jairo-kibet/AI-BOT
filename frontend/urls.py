@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import home, signUp, newPage, sidebar, login, studentSignUp, homepPage, chatIndex, session_exit
 from .utils import ask
+from .validators import create_new_chat, chat_rename, chat_star, chat_delete
 
 urlpatterns = [
     path('', home, name='home'),
@@ -13,4 +14,8 @@ urlpatterns = [
     path('home-page/', homepPage, name='homepage'),
     path('chat-index/', chatIndex, name='chatindex'),
     path('ask/', ask, name='ask'),
+    path('create-new-chat/', create_new_chat, name='create_new_chat'),
+    path('chat-rename/', chat_rename, name='chat_rename'),
+    path('chat-star/', chat_star, name='chat_star'),
+    path('chat-delete/', chat_delete, name='chat_delete'),
 ]
