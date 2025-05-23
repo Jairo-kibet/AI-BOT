@@ -281,6 +281,30 @@ document.addEventListener('DOMContentLoaded', () => {
       typeNext();
     }
 
+    // Append bot message without typing effect (for loaded messages)
+    function appendBotMessageNoTyping(htmlContent) {
+      const botMsg = document.createElement('div');
+      botMsg.className = 'bot-msg bot-msg-content';
+      botMsg.innerHTML = `
+        <div class="bot-header">GALGOTIAS AI-Bot</div>
+        <p class="bot-typing-content">${htmlContent}</p>
+        <div class="bot-actions" style="display:none;">
+          <div class="reaction-group">
+            <i class="bi bi-hand-thumbs-up" title="Like"></i>
+            <span style="margin: 0; color: #bbb;">|</span>
+            <i class="bi bi-hand-thumbs-down" title="Dislike"></i>
+            <span style="margin: 0; color: #bbb;">|</span>
+            <i class="bi bi-clipboard copy-bot-response" title="Copy"></i>
+          </div>
+          <button class="regenerate-btn">
+            <i class="bi bi-arrow-repeat"> Regenerate</i>
+          </button>
+        </div>
+      `;
+      chatWrapper.appendChild(botMsg);
+      scrollChatToBottom();
+    }
+
     // Ensure chat area always leaves 70px above chat-input
     function scrollChatToBottom() {
       // Add enough bottom padding to chatWrapper
@@ -329,6 +353,39 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       return null;
     }
+
+    // Fetch and display chat messages for a given chatId
+function loadChatMessages(chatId) {
+  if (!chatId) return;
+  chatWrapper.innerHTML = ''; 
+  fetch(`/get-chat-messages/?chat_id=${encodeURIComponent(chatId)}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data && Array.isArray(data.messages)) {
+        data.messages.forEach(msg => {
+          appendUserMessage(msg.input_query);
+          appendBotMessageNoTyping(formatResponse(msg.bot_response));
+        });
+      }
+    });
+}
+
+// Attach click event to conversation items to load messages
+const convList = document.getElementById('conversationList');
+if (convList) {
+  convList.addEventListener('click', function(e) {
+    const item = e.target.closest('.conversation-item');
+    if (item) {
+      convList.querySelectorAll('.conversation-item').forEach(function(ci) {
+        ci.classList.remove('active');
+      });
+      item.classList.add('active');
+      // Load messages for this chatId
+      const chatId = item.getAttribute('data-chat-id');
+      loadChatMessages(chatId);
+    }
+  });
+}
 
     // Handle sending user input
     function handleChatInput() {

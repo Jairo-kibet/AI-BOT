@@ -239,9 +239,8 @@
         }
 
         .conversation-item.active {
-          background: #e6e0f7 !important;
-          color: #222;
-          font-weight: 600;
+          background:rgb(242, 237, 255) !important;
+          color:rgb(67, 48, 161) !important;
         }
 
         .conversation-dots {
@@ -260,7 +259,7 @@
 
         .setting-btn {
         background-color: #f3f3f3;
-        color: #333;
+        color:rgb(67, 48, 161) !important;
         font-size: 13px;
         font-weight: 500;
         border-radius: 15px;
@@ -270,7 +269,7 @@
         }
 
         .setting-btn i {
-        color: #555;
+        color:rgb(206, 77, 77);
         font-size: 14px;
         margin-right: 5px;
         }
@@ -443,9 +442,9 @@
   </div>
   {% if starred_chats %}
     {% for starred_chat in starred_chats|dictsort:"date_created" %}
-      <div class="conversations px-3 starred-scrollable scrollable-conversations">
-        <div class="conversation-item" data-chat-id="{{ starred_chat.chatId }}">
-          <i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> {{ starred_chat.chat_heading }}
+      <div class="conversations px-3 starred-scrollable scrollable-conversations" data-chat-id="{{ starred_chat.chatId }}">
+        <div class="conversation-item" style="color:rgb(124, 122, 122);">
+          <i class="bi bi-star-fill" style="color:#ffffff; margin-right: 5px;"></i> {{ starred_chat.chat_heading }}
         </div>
       </div>
     {% endfor %}
