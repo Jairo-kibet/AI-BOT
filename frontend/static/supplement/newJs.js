@@ -181,15 +181,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
+    // Get the active chatId (topmost chat history)
+    function getActiveChatId() {
+      // Find the first conversation item in the sidebar (topmost chat)
+      const conversation = document.querySelector('.scrollable-conversations .conversations[data-chat-id]');
+      if (conversation) {
+        return conversation.getAttribute('data-chat-id');
+      }
+      return null;
+    }
+
     // Handle sending user input
     function handleChatInput() {
       const message = inputField.value.trim();
       if (!message) return;
 
+      // Get active chatId
+      const chatId = getActiveChatId();
       showChatMessage(); // Show user message with animation
       appendUserMessage(message);
       inputField.value = '';
-      fetchBotResponse(message);
+      fetchBotResponse(message, chatId);
     }
 
     // formating the response of the bot
@@ -201,13 +213,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // Fetch bot response from backend
-    function fetchBotResponse(userQuery) {
+    function fetchBotResponse(userQuery, chatId) {
+      const bodyObj = { message: userQuery };
+      if (chatId) bodyObj.chat_id = chatId;
       fetch('/ask/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ message: userQuery }) // Fix: use 'message' key to match backend
+        body: JSON.stringify(bodyObj)
       })
       .then(res => {
         if (!res.ok) throw new Error('Network response was not ok');
@@ -254,4 +268,9 @@ document.addEventListener('DOMContentLoaded', () => {
     inputField.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') handleChatInput();
     });
+  });
+
+
+  document.addEventListener('DOMContentLoaded', () => {
+
   });

@@ -57,10 +57,10 @@ def get_chat_messages(request):
     if not chat_id:
         return JsonResponse({'error': 'No chat_id provided'}, status=400)
     try:
-        chat = ChatHistory.objects.get(id=chat_id)
+        chat = ChatHistory.objects.get(chatId=chat_id)
     except ChatHistory.DoesNotExist:
         return JsonResponse({'error': 'Chat not found'}, status=404)
-    messages = ChatMessage.objects.filter(chat=chat).order_by('timestamp')
+    messages = ChatMessage.objects.filter(chatId=chat).order_by('timestamp')
     messages_data = [
         {
             'input_query': m.input_query,
