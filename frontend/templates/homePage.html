@@ -343,12 +343,16 @@
             transform: scale(1.15) rotate(-8deg);
         }
 
-        .chat-input input {
+        .chat-input textarea {
             flex: 1;
             border: none;
             outline: none;
             margin: 0 15px;
             font-size: 14px;
+            resize: none;
+            overflow: hidden;
+            min-height: 36px;
+            max-height: 120px;
         }
 
         .chat-input button {
@@ -730,10 +734,12 @@
             </div>
         </div>
     </div>
-    <div class="chat-input">
-        <i class="bi bi-soundwave"></i>
-        <input type="text" id="chatInputBox" placeholder="Type your question here...">
-        <button type="submit" id="chatInputBtn">&#10148;</button>
+    <div class="chat-input" style="display:flex;align-items:center;gap:8px;">
+        <i class="bi bi-soundwave" style="font-size:24px;transition:color 0.2s, transform 0.2s;cursor:pointer;display:flex;align-items:center;"></i>
+        <textarea id="chatInputBox" placeholder="Type your question here..." rows="1" style="flex:1; border:none; outline:none; font-size:15px; margin:0 10px; resize:none; overflow:hidden; min-height:36px; max-height:120px; background:transparent; line-height:1.5; padding:8px 0 8px 0;"></textarea>
+        <button type="submit" id="chatInputBtn" style="background:linear-gradient(90deg,#0056b3 0%,#007bff 100%);color:white;border:none;border-radius:50%;padding:10px 13px;font-size:18px;box-shadow:0 4px 12px rgba(92,59,255,0.18);display:flex;align-items:center;justify-content:center;transition:background 0.18s,box-shadow 0.18s;cursor:pointer;min-width:40px;min-height:40px;">
+            &#10148;
+        </button>
     </div>
 </div>
 <script src="{% static 'js/scripts.js' %}"></script>

@@ -315,9 +315,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // Get the active chatId (topmost chat history)
+    // Get the active chatId (from the currently active chat-item)
     function getActiveChatId() {
-      // Find the first conversation item in the sidebar (topmost chat)
+      // Find the conversation item in the sidebar that is currently active
+      const activeConversation = document.querySelector('.conversation-item.active');
+      if (activeConversation && activeConversation.dataset.chatId) {
+        return activeConversation.dataset.chatId;
+      }
+      // Fallback: try to find the first conversation with data-chat-id
       const conversation = document.querySelector('.scrollable-conversations .conversations[data-chat-id]');
       if (conversation) {
         return conversation.getAttribute('data-chat-id');
@@ -416,7 +421,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         recognition = new SpeechRecognition();
-        recognition.lang = 'en-US';
+        recognition.lang = 'en-IN'; // Set the language for recognition
         recognition.interimResults = true; // Enable interim results for live transcription
         recognition.maxAlternatives = 1;
         let listening = false;
@@ -447,26 +452,38 @@ document.addEventListener('DOMContentLoaded', () => {
           }
           if (inputField) {
             const fullText = (finalTranscript + interimTranscript).replace(/^\s+/, '');
-            // If already animating, clear previous interval
+            // Always animate from current value to fullText, even if fullText grows
             if (window.speechLetterInterval) {
               clearInterval(window.speechLetterInterval);
               window.speechLetterInterval = null;
             }
-            // Only animate if the text is different from what's already in the input
-            if (inputField.value !== fullText) {
-              let current = inputField.value;
-              let idx = current.length;
-              window.speechLetterInterval = setInterval(() => {
-                if (idx < fullText.length) {
-                  current += fullText[idx];
-                  inputField.value = current;
-                  idx++;
-                } else {
-                  clearInterval(window.speechLetterInterval);
-                  window.speechLetterInterval = null;
-                }
-              }, 22); // 22ms per letter for smooth effect
+            let current = inputField.value;
+            let idx = 0;
+            // If the transcript shrinks (e.g. user paused and resumed), reset to fullText
+            if (current.length > fullText.length || !fullText.startsWith(current)) {
+              current = '';
+              inputField.value = '';
+              if (inputField.tagName === 'TEXTAREA') {
+                inputField.style.height = 'auto';
+                inputField.style.height = (inputField.scrollHeight) + 'px';
+              }
             }
+            idx = current.length;
+            window.speechLetterInterval = setInterval(() => {
+              if (idx < fullText.length) {
+                current += fullText[idx];
+                inputField.value = current;
+                // Auto-resize textarea if needed
+                if (inputField.tagName === 'TEXTAREA') {
+                  inputField.style.height = 'auto';
+                  inputField.style.height = (inputField.scrollHeight) + 'px';
+                }
+                idx++;
+              } else {
+                clearInterval(window.speechLetterInterval);
+                window.speechLetterInterval = null;
+              }
+            }, 22);
           }
         };
         recognition.onend = function() {
@@ -516,3 +533,23 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   });
+
+  // Enhance chat input: auto-expand textarea logic
+  const chatInputBox = document.getElementById('chatInputBox');
+  if (chatInputBox && chatInputBox.tagName === 'TEXTAREA') {
+    function autoResizeTextarea() {
+      chatInputBox.style.height = 'auto';
+      chatInputBox.style.height = (chatInputBox.scrollHeight) + 'px';
+    }
+    chatInputBox.addEventListener('input', autoResizeTextarea);
+    // Initial resize
+    autoResizeTextarea();
+    chatInputBox.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        setTimeout(() => {
+          chatInputBox.value = '';
+          chatInputBox.style.height = 'auto';
+        }, 10);
+      }
+    });
+  }

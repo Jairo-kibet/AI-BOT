@@ -238,6 +238,12 @@
         background-color: #f5f5f5;
         }
 
+        .conversation-item.active {
+          background: #e6e0f7 !important;
+          color: #222;
+          font-weight: 600;
+        }
+
         .conversation-dots {
         display: none;
         position: absolute;
@@ -409,9 +415,9 @@
 </div>
 <div class="flex-grow-1 d-flex flex-column" style="min-height:0;">
   <div class="scrollable-conversations flex-grow-1 d-flex flex-column" style="overflow-y:auto; min-height:0;">
-    <div class="conversation-list ps-2 ms-1 pe-2 me-1">
+    <div class="conversation-list ps-2 ms-1 pe-2 me-1" id="conversationList">
       {% for conversation in chat_conversations %}
-        <div class="conversation-item d-flex align-items-center mb-2 ps-2 pe-2 conversation-hoverable" data-chat-id="{{ conversation.chatId }}" style="padding:10px 0 10px 12px; cursor:pointer; border-radius:8px; margin:0 8px; position:relative;">
+        <div class="conversation-item{% if forloop.first %} active{% endif %}" data-chat-id="{{ conversation.chatId }}">
           <i class="bi bi-chat-left-text me-2" style="color:#5c3bff;"></i>
           <span class="flex-grow-1" style="font-size:15px;">{{ conversation.chat_heading }}</span>
           <span class="conversation-dots" tabindex="0" style="display:none; position:absolute; right:12px; top:50%; transform:translateY(-50%); cursor:pointer;">
@@ -437,8 +443,8 @@
   </div>
   {% if starred_chats %}
     {% for starred_chat in starred_chats|dictsort:"date_created" %}
-      <div class="conversations px-3 starred-scrollable scrollable-conversations" data-chat-id="{{ starred_chat.chatId }}">
-        <div class="conversation-item">
+      <div class="conversations px-3 starred-scrollable scrollable-conversations">
+        <div class="conversation-item" data-chat-id="{{ starred_chat.chatId }}">
           <i class="bi bi-star-fill" style="color:#ffb300; margin-right: 5px;"></i> {{ starred_chat.chat_heading }}
         </div>
       </div>
@@ -552,6 +558,20 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
   });
+
+  const convList = document.getElementById('conversationList');
+  if (convList) {
+    convList.addEventListener('click', function(e) {
+      const item = e.target.closest('.conversation-item');
+      if (item) {
+        convList.querySelectorAll('.conversation-item').forEach(function(ci) {
+          ci.classList.remove('active');
+        });
+        item.classList.add('active');
+        // Optionally, trigger chat load logic here
+      }
+    });
+  }
 });
 function getCSRFToken() {
   let cookieValue = null;
