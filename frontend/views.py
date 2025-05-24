@@ -78,3 +78,6 @@ def homepPage(request):
     
 def chatIndex(request):
     return render(request, 'chatIndex.html')
+
+def login_popup(request):
+    return render(request, 'includes/loginPopUp.html')

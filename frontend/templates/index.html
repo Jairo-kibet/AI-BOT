@@ -614,11 +614,140 @@
             }
         }
     </style>
+    <style>
+      /* Login Popup Modal Styles */
+      .popup-overlay {
+        display: none;
+        position: fixed;
+        top: 0; left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 2000;
+        justify-content: center;
+        align-items: center;
+      }
+      .popup-overlay.active {
+        display: flex;
+      }
+      .popup-modal-card {
+        width: 92vw;
+        max-width: 370px;
+        min-width: 0;
+        border-radius: 25px;
+        overflow: hidden;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+        background-color: white;
+        text-align: left;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+        animation: popupIn 0.25s cubic-bezier(0.4,0,0.2,1);
+      }
+      @keyframes popupIn {
+        0% { transform: scale(0.92) translateY(40px); opacity: 0; }
+        100% { transform: scale(1) translateY(0); opacity: 1; }
+      }
+      .popup-modal-card .close-btn {
+        position: absolute;
+        top: 12px;
+        right: 18px;
+        font-size: 22px;
+        color: #888;
+        cursor: pointer;
+        z-index: 10;
+        background: none;
+        border: none;
+      }
+      .popup-modal-card .top-section {
+        background: url('/static/assets/Bg_popup.png') no-repeat center center;
+        background-size: cover;
+        padding: 32px 20px 24px 20px;
+        position: relative;
+        border-radius: 25px 25px 0 0;
+      }
+      .popup-modal-card .title {
+        font-size: 22px;
+        color: white;
+        letter-spacing: 2px;
+        font-weight: 600;
+        font-family: 'Inter', sans-serif;
+      }
+      .popup-modal-card .bottom-section {
+        padding: 28px 22px 24px 22px;
+        background: #fff;
+        border-radius: 0 0 25px 25px;
+      }
+      .popup-modal-card .main-heading {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: #111827;
+      }
+      .popup-modal-card .sub-text {
+        font-size: 15px;
+        color: #4b5563;
+        margin-bottom: 22px;
+      }
+      .popup-modal-card .button-group {
+        display: flex;
+        justify-content: left;
+        gap: 16px;
+      }
+      .popup-modal-card .btn {
+        padding: 7px 24px;
+        border-radius: 9999px;
+        font-size: 15px;
+        font-weight: 400;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.10);
+      }
+      .popup-modal-card .btn-dark {
+        background-color: #111827;
+        color: white;
+      }
+      .popup-modal-card .btn-dark:hover {
+        background-color: #1f2937;
+      }
+      .popup-modal-card .btn-light {
+        background-color: #f3f4f6;
+        color: #111827;
+        border: 1px solid #d1d5db;
+      }
+      .popup-modal-card .btn-light:hover {
+        background-color: #e5e7eb;
+      }
+      @media (max-width: 600px) {
+        .popup-modal-card {
+          max-width: 98vw;
+          border-radius: 16px;
+        }
+        .popup-modal-card .top-section {
+          padding: 18px 10px 12px 10px;
+        }
+        .popup-modal-card .title {
+          font-size: 16px;
+        }
+        .popup-modal-card .main-heading {
+          font-size: 15px;
+        }
+        .popup-modal-card .sub-text {
+          font-size: 12px;
+        }
+        .popup-modal-card .button-group .btn {
+          font-size: 12px;
+          padding: 6px 12px;
+        }
+      }
+    </style>
 </head>
 <body>
 <div class="main-container">
     <div class="top-left-buttons">
-        <button class="plus"><a href="{% url 'chatindex' %}"><i class="bi bi-plus"></i></a></button>
+        <button class="plus" id="openLoginPopupBtn"><a href="javascript:void(0)"><i class="bi bi-plus"></i></a></button>
     </div>
     <div class="top-right-share"><a href="{% url 'login' %}" style="text-decoration: none; color: inherit;">login</a></div>
 
@@ -723,7 +852,40 @@
         <button type="submit" id="chatInputBtn">&#10148;</button>
     </div>
 </div>
+<!-- Login Popup Modal -->
+<div class="popup-overlay" id="loginPopupOverlay">
+  <div class="popup-modal-card">
+    <button class="close-btn" id="closeLoginPopupBtn">&times;</button>
+    <div class="top-section">
+      <h2 class="title">GALGOTIA’s <span class="ai-bot">Ai-Bot</span></h2>
+    </div>
+    <div class="bottom-section">
+      <h1 class="main-heading">Your Smart Access</h1>
+      <p class="sub-text">"You're just one step away from smarter assistance. Sign in now!"</p>
+      <div class="button-group">
+        <button class="btn btn-dark" onclick="window.location.href='{% url 'login' %}'">Log in</button>
+        <button class="btn btn-light" onclick="window.location.href='{% url 'register' %}'">Sign up</button>
+      </div>
+    </div>
+  </div>
+</div>
 <script src="{% static 'js/scripts.js' %}"></script>
 <script src="{% static 'supplement/newJs.js' %}"></script>
+<script>
+  // Show popup on plus button click
+  document.getElementById('openLoginPopupBtn').onclick = function(e) {
+    e.preventDefault();
+    document.getElementById('loginPopupOverlay').classList.add('active');
+  };
+  // Hide popup on close button click or overlay click
+  document.getElementById('closeLoginPopupBtn').onclick = function() {
+    document.getElementById('loginPopupOverlay').classList.remove('active');
+  };
+  document.getElementById('loginPopupOverlay').onclick = function(e) {
+    if (e.target === this) {
+      this.classList.remove('active');
+    }
+  };
+</script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import home, signUp, newPage, sidebar, login, studentSignUp, homepPage, chatIndex, session_exit
+from .views import home, signUp, newPage, sidebar, login, studentSignUp, homepPage, chatIndex, session_exit, login_popup
 from .utils import ask
 from .validators import create_new_chat, chat_rename, chat_star, chat_delete, get_chat_messages
 
@@ -13,6 +13,7 @@ urlpatterns = [
     path('student-sign-up/', studentSignUp, name='studentregister'),
     path('home-page/', homepPage, name='homepage'),
     path('chat-index/', chatIndex, name='chatindex'),
+    path('login-popup/', login_popup, name='login_popup'),
     path('ask/', ask, name='ask'),
     path('create-new-chat/', create_new_chat, name='create_new_chat'),
     path('chat-rename/', chat_rename, name='chat_rename'),
