@@ -1,11 +1,29 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Get the active chatId (from the currently active chat-item)
+    function getActiveChatId() {
+      // Find the conversation item in the sidebar that is currently active
+      const activeConversation = document.querySelector('.conversation-item.active');
+      if (activeConversation && activeConversation.dataset.chatId) {
+        return activeConversation.dataset.chatId;
+      }
+      // Fallback: try to find the first conversation with data-chat-id
+      const conversation = document.querySelector('.scrollable-conversations .conversations[data-chat-id]');
+      if (conversation) {
+        return conversation.getAttribute('data-chat-id');
+      }
+      return null;
+    }
+    
     const inputField = document.getElementById('chatInputBox');
     const sendBtn = document.getElementById('chatInputBtn');
     // const chatWrapper = document.querySelector('.chat-wrapper');
     const chatWrapper = document.getElementById('chatArea');
     const leftCards = document.getElementById('leftCardsSection');
     const centerText = document.getElementById('centerTextSection');
-
+    
+    debugger;
+    const uniChatId = getActiveChatId();
+    loadChatMessages(uniChatId);
     // Add user message to chat
     function appendUserMessage(text) {
       const userDiv = document.createElement('div');
@@ -356,6 +374,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Fetch and display chat messages for a given chatId
 function loadChatMessages(chatId) {
+  debugger;
   if (!chatId) return;
   chatWrapper.innerHTML = '';
   fetch(`/get-chat-messages/?chat_id=${encodeURIComponent(chatId)}`)
@@ -382,7 +401,22 @@ if (convList) {
       item.classList.add('active');
       // Load messages for this chatId
       const chatId = item.getAttribute('data-chat-id');
-      loadChatMessages(chatId);
+      showChatMessage(); // Show user message with animation
+      // Use a flag to delay only on the first click
+      if (!window._firstChatLoadDone) {
+        window._firstChatLoadDone = true;
+        setTimeout(() => {
+          loadChatMessages(chatId);
+        }, 500); // Delay only for the first click
+      } else {
+        if (chatId == uniChatId) {
+          leftCards.style.display = '';
+          centerText.style.display = '';
+          chatArea.style.display = 'none';
+        } else {
+          loadChatMessages(chatId); // Load instantly on further clicks
+        }
+      }
     }
   });
 }
@@ -398,6 +432,14 @@ if (convList) {
       appendUserMessage(message);
       inputField.value = '';
       fetchBotResponse(message, chatId);
+    }
+
+    function getActiveChatIdMessage() {
+      const currentChatId = getActiveChatId();
+      if (!currentChatId) return ;
+      
+      loadChatMessages(chatId);
+
     }
 
     // formating the response of the bot

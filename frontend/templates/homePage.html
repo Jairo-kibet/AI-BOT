@@ -642,13 +642,13 @@
     {% endif %}
 
     <div id="mainContentArea">
-        <div class="center-text" id="centerTextSection">
+        <div class="center-text" id="centerTextSection" style="">
             <div class="tag"  id="centerTextTag"><span>GALGOTIA’s</span> Ai-Bot</div>
             <h1>Good day! How may i assist you ?</h1>
         </div>
 
         <div class="cards-wrapper" id="cardsWrapperSection">
-            <div class="left-cards" id="leftCardsSection">
+            <div class="left-cards" id="leftCardsSection" style="">
                 <div class="cards-viewer" style="display: flex; justify-content: center; align-items: center; width: 100%;">
                     <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; width: 100%;">
                         <div class="feature-card">
@@ -729,9 +729,11 @@
                 </div>
             </div>
             <!-- Chat area for displaying user queries -->
+            {% if active_chat and active_chat.messages.count == 0 %}
             <div id="chatArea" style="display:none; flex-direction:column; gap:10px; align-items:left; width:60%;">
-                
-            </div>
+            {% else %}
+            <div id="chatArea" style="display:flex; flex-direction:column; gap:10px; align-items:left; width:60%;">
+            {% endif %}
         </div>
     </div>
     <div class="chat-input" style="display:flex;align-items:center;gap:8px;">
