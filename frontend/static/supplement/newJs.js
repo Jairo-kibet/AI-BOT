@@ -357,7 +357,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Fetch and display chat messages for a given chatId
 function loadChatMessages(chatId) {
   if (!chatId) return;
-  chatWrapper.innerHTML = ''; 
+  chatWrapper.innerHTML = '';
   fetch(`/get-chat-messages/?chat_id=${encodeURIComponent(chatId)}`)
     .then(res => res.json())
     .then(data => {
@@ -402,6 +402,8 @@ if (convList) {
 
     // formating the response of the bot
     function formatResponse(text) {
+        // Remove multiple spaces/tabs and newlines after a colon (e.g. ":  \n\n" or ": \n\n\n" or ":   \n\n\n\n") and keep only a single newline
+        text = text.replace(/:(?:[ \t\r]*)?(\n[ \t\r]*){2,}/g, ':\n');
         // Improved URL regex: matches http(s):// or www. and ensures full URL match, excluding trailing punctuation
         const urlRegex = /(?:(?:https?:\/\/)|www\.)[a-zA-Z0-9\-._~:/?#@!$&'()*+,;=%]+/gi;
         // Find all unique URLs in the text
