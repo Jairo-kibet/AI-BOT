@@ -61,12 +61,8 @@ def homepPage(request):
         user_id = request.session['user_id']
         user = User.objects.get(userId=user_id)
         chat_conversations = ChatHistory.objects.filter(userId=user).order_by('-date_created')
-        # starred_chats = starredChat.objects.filter(userId=user).order_by('-date_created')
-
         starred_chats = ChatHistory.objects.filter(chatId__in=starredChat.objects.values('chatId')).distinct()
-
-        # for chat_conversation in chat_conversations
-        # If there is no chat hconversations for the perticular logged in user
+        # If there is no chat conversation for the particular logged in user
         if not chat_conversations.exists():
             new_chat = ChatHistory.objects.create(userId=user, chat_heading="New Chat")
             chat_conversations = ChatHistory.objects.filter(userId=user).order_by('-date_created')

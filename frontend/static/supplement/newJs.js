@@ -368,7 +368,7 @@ function loadChatMessages(chatId) {
         });
       }
     });
-}
+} 
 
 // Attach click event to conversation items to load messages
 const convList = document.getElementById('conversationList');
@@ -404,13 +404,30 @@ if (convList) {
     function formatResponse(text) {
         // Remove multiple spaces/tabs and newlines after a colon (e.g. ":  \n\n" or ": \n\n\n" or ":   \n\n\n\n") and keep only a single newline
         text = text.replace(/:(?:[ \t\r]*)?(\n[ \t\r]*){2,}/g, ':\n');
+        // Convert patterns like \n\s*\*\s to bullets (e.g. "\n   * text")
+        // We'll split lines and look for lines that start with * (optionally after whitespace)
+        let lines = text.split(/\n/);
+        let formatted = '';
+        let inUl = false;
+        for (let i = 0; i < lines.length; i++) {
+            let line = lines[i];
+            // If line is a bullet (optionally after whitespace)
+            if (/^\s*\*\s+/.test(line)) {
+                if (!inUl) { formatted += '<ul>'; inUl = true; }
+                formatted += '<li>' + line.replace(/^\s*\*\s+/, '') + '</li>';
+            } else {
+                if (inUl) { formatted += '</ul>'; inUl = false; }
+                formatted += line + (i < lines.length - 1 ? '\n' : '');
+            }
+        }
+        if (inUl) formatted += '</ul>';
         // Improved URL regex: matches http(s):// or www. and ensures full URL match, excluding trailing punctuation
         const urlRegex = /(?:(?:https?:\/\/)|www\.)[a-zA-Z0-9\-._~:/?#@!$&'()*+,;=%]+/gi;
         // Find all unique URLs in the text
         const foundUrls = [];
         let match;
         let uniqueUrls = new Set();
-        while ((match = urlRegex.exec(text)) !== null) {
+        while ((match = urlRegex.exec(formatted)) !== null) {
             // Remove trailing punctuation
             let url = match[0];
             while (/[.,;:!?)]$/.test(url)) {
@@ -424,7 +441,7 @@ if (convList) {
             }
         }
         // Replace all URLs in text with the first unique occurrence only
-        let replaced = text;
+        let replaced = formatted;
         foundUrls.forEach(url => {
             // Remove trailing punctuation for display
             let displayUrl = url;
@@ -461,31 +478,40 @@ if (convList) {
       fetch('/ask/', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken'),
         },
-        body: JSON.stringify(bodyObj)
+        body: JSON.stringify({ message: userQuery, chat_id: chatId }),
       })
-      .then(res => {
-        if (!res.ok) throw new Error('Network response was not ok');
-        const contentType = res.headers.get('content-type');
-        if (contentType && contentType.indexOf('application/json') !== -1) {
-          return res.json();
-        } else {
-          throw new Error('Invalid server response');
-        }
-      })
-      .then((data) => {
-        if (data && data.response) {
+        .then(response => response.json())
+        .then(data => {
+          if (data && data.response) {
             const formattedText = formatResponse(data.response);
             appendBotMessageTyping(formattedText); // response with typing effect
-        } else {
-          appendBotMessageTyping("<p>Sorry, I didn't understand that. Please try again.</p>");
-        }
-      })
-      .catch(error => {
-        console.error('Bot error:', error);
-        appendBotMessage("<p>Oops! Something went wrong. Please try again.</p>");
-      });
+          } else {
+            appendBotMessageTyping("<p>Sorry, I didn't understand that. Please try again.</p>");
+          }
+          // --- Real-time sidebar heading update logic ---
+          // Only update if this is the first message in the chat
+          if (chatId) {
+            // Find the sidebar chat item by data-chat-id
+            const chatItem = document.querySelector(`.conversation-item[data-chat-id="${chatId}"]`);
+            if (chatItem) {
+              // Check if this chat only has one message (i.e., first message just sent)
+              // We'll check if the chat heading is still the default (e.g., 'New Chat')
+              const headingSpan = chatItem.querySelector('.conversation-heading, .chat-heading, span');
+              if (headingSpan && (headingSpan.textContent.trim() === 'New Chat' || headingSpan.textContent.trim() === '' || headingSpan.textContent.trim().length < 5)) {
+                // Use the first 22 chars of the bot response + '...'
+                let newHeading = data.response ? (data.response.slice(0, 22) + '...') : '';
+                headingSpan.textContent = newHeading;
+              }
+            }
+          }
+        })
+        .catch(error => {
+          console.error('Bot error:', error);
+          appendBotMessage("<p>Oops! Something went wrong. Please try again.</p>");
+        });
     }
 
     // Get Cookie function
