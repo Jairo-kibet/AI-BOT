@@ -1,18 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Get the active chatId (from the currently active chat-item)
-    function getActiveChatId() {
-      // Find the conversation item in the sidebar that is currently active
-      const activeConversation = document.querySelector('.conversation-item.active');
-      if (activeConversation && activeConversation.dataset.chatId) {
-        return activeConversation.dataset.chatId;
-      }
-      // Fallback: try to find the first conversation with data-chat-id
-      const conversation = document.querySelector('.scrollable-conversations .conversations[data-chat-id]');
-      if (conversation) {
-        return conversation.getAttribute('data-chat-id');
-      }
-      return null;
-    }
     
     const inputField = document.getElementById('chatInputBox');
     const sendBtn = document.getElementById('chatInputBtn');
@@ -20,8 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatWrapper = document.getElementById('chatArea');
     const leftCards = document.getElementById('leftCardsSection');
     const centerText = document.getElementById('centerTextSection');
+    const featureCard = document.querySelectorAll('.feature-card');
+    const infoCard = document.querySelectorAll('.info-card');
     
-    debugger;
     const uniChatId = getActiveChatId();
     loadChatMessages(uniChatId);
     // Add user message to chat
@@ -374,7 +361,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Fetch and display chat messages for a given chatId
 function loadChatMessages(chatId) {
-  debugger;
   if (!chatId) return;
   chatWrapper.innerHTML = '';
   fetch(`/get-chat-messages/?chat_id=${encodeURIComponent(chatId)}`)
@@ -409,13 +395,18 @@ if (convList) {
           loadChatMessages(chatId);
         }, 500); // Delay only for the first click
       } else {
-        if (chatId == uniChatId) {
-          leftCards.style.display = '';
-          centerText.style.display = '';
-          chatArea.style.display = 'none';
-        } else {
-          loadChatMessages(chatId); // Load instantly on further clicks
-        }
+        // Check if the selected chat has any messages in the database
+        fetch(`/get-chat-messages/?chat_id=${encodeURIComponent(chatId)}`)
+          .then(res => res.json())
+          .then(data => {
+            if (data && Array.isArray(data.messages) && data.messages.length === 0) {
+              leftCards.style.display = '';
+              centerText.style.display = '';
+              chatArea.style.display = 'none';
+            } else {
+              loadChatMessages(chatId); // Load messages if chat is not empty
+            }
+          });
       }
     }
   });
@@ -432,14 +423,6 @@ if (convList) {
       appendUserMessage(message);
       inputField.value = '';
       fetchBotResponse(message, chatId);
-    }
-
-    function getActiveChatIdMessage() {
-      const currentChatId = getActiveChatId();
-      if (!currentChatId) return ;
-      
-      loadChatMessages(chatId);
-
     }
 
     // formating the response of the bot
@@ -578,6 +561,26 @@ if (convList) {
     inputField.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') handleChatInput();
     });
+
+    // Handle Info card clicks
+
+        infoCard.forEach(function(card) {
+          card.addEventListener('click', function() {
+            const contentElem = card;
+            const titleElem = card.querySelector('p');
+            const featureCardContent = (contentElem ? contentElem.textContent : '') + (titleElem ? titleElem.textContent : '');
+            const message = featureCardContent.trim();
+            if (!message) return;
+
+            // Get active chatId
+            const chatId = getActiveChatId();
+            showChatMessage(); // Show user message with animation
+            appendUserMessage(message);
+            fetchBotResponse(message, chatId);
+            // Now you can use featureCardContent as needed, e.g., console.log(featureCardContent);
+          });
+        });
+
   });
 
 
