@@ -14,61 +14,14 @@
             font-family: 'Inter', sans-serif;
             background-color: #f2f2f2;
         }
-        /* Sidebar transition styles */
-        #sidebarPanel {
-            transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.25s;
-            transform: translateX(-100%);
-            opacity: 0;
-            pointer-events: none;
-        }
-        #sidebarPanel.sidebar-visible {
-            transform: translateX(0);
-            opacity: 1;
-            pointer-events: auto;
-        }
-        #sidebarOverlay {
-            transition: background 0.3s;
-            background: transparent;
-        }
-        #sidebarOverlay.sidebar-visible {
-            background: rgba(0,0,0,0.12);
-        }
-        .top-left-buttons {
-            transition: opacity 0.3s, visibility 0.3s;
-            opacity: 1;
-            visibility: visible;
-        }
-        .top-left-buttons.hide-buttons {
-            opacity: 0;
-            visibility: hidden;
-        }
+        
         /* Slide main content when sidebar is open */
         .main-container .center-text,
         .main-container .cards-wrapper {
             transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
         }
-        .main-container.sidebar-open .center-text,
-        .main-container.sidebar-open .cards-wrapper {
-            transform: translateX(140px); /* Move by half sidebar width */
-        }
         .main-container .chat-input {
             transition: left 0.35s cubic-bezier(0.4,0,0.2,1);
-        }
-        .main-container.sidebar-open .chat-input {
-            left: calc(50% + 70px); /* Move by half sidebar width */
-        }
-        @media (max-width: 900px) {
-            .main-container.sidebar-open .center-text,
-            .main-container.sidebar-open .cards-wrapper {
-                transform: none;
-            }
-            .main-container.sidebar-open .chat-input {
-                left: 50%;
-            }
-        }
-        /* Ensure chat-input stays centered in visible area */
-        .main-container.sidebar-open .chat-input {
-            left: calc(50% + 140px);
         }
         .main-container .chat-input {
             transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), left 0.35s cubic-bezier(0.4,0,0.2,1);
@@ -324,7 +277,7 @@
             margin: 0;
             background: white;
             border-radius: 30px;
-            padding: 10px 20px;
+            padding: 5px 10px;
             display: flex;
             align-items: center;
             width: 600px;
@@ -334,27 +287,30 @@
         }
 
         .chat-input i {
-            font-size: 18px;
+            font-size: 22px;
             color: #999;
             transition: color 0.2s, text-shadow 0.2s, transform 0.2s;
             cursor: pointer;
         }
         .chat-input i:hover {
             color: #5c3bff;
-            text-shadow: 0 0 8px #a45cff, 0 0 4px #5c3bff;
             transform: scale(1.15) rotate(-8deg);
         }
 
-        .chat-input input {
+        .chat-input textarea {
             flex: 1;
             border: none;
             outline: none;
             margin: 0 15px;
             font-size: 14px;
+            resize: none;
+            overflow: hidden;
+            min-height: 16px !important;
+            max-height: 120px;
         }
 
         .chat-input button {
-            background: #5c3bff;
+            background:linear-gradient(90deg,#0056b3 0%,#007bff 100%);
             color: white;
             border: none;
             border-radius: 50%;
@@ -419,6 +375,22 @@
                 opacity: 1;
                 transform: translateY(0) scale(1);
             }
+        }
+    </style>
+    <style>
+        .edit-icon {
+            font-size: 18px;
+            float: right;
+            margin: auto;
+            margin-right: 0;
+            color: #6c757d;
+            cursor: pointer;
+        }
+        .reaction-group, .more-group {
+            height: 20px;
+        }
+        .reaction-group span {
+            font-size: 10px;
         }
     </style>
     <style>
@@ -846,10 +818,12 @@
             </div>
         </div>
     </div>
-    <div class="chat-input">
-        <i class="bi bi-soundwave"></i>
-        <input type="text" id="chatInputBox" placeholder="Type your question here...">
-        <button type="submit" id="chatInputBtn">&#10148;</button>
+    <div class="chat-input" style="display:flex;align-items:center;gap:8px;">
+        <i class="bi bi-soundwave" style="font-size:24px;transition:color 0.2s, transform 0.2s;cursor:pointer;display:flex;align-items:center;"></i>
+        <textarea id="chatInputBox" placeholder="Type your question here..." rows="1" style="flex:1; border:none; outline:none; font-size:15px; margin:0 10px; resize:none; overflow:hidden; min-height:16px; max-height:120px; background:transparent; line-height:1.5; padding:8px 0 8px 0;"></textarea>
+        <button type="submit" id="chatInputBtn" style="background:linear-gradient(90deg,#0056b3 0%,#007bff 100%);color:white;border:none;border-radius:50%;padding:10px 13px;font-size:18px;box-shadow:0 4px 12px rgba(92,59,255,0.18);display:flex;align-items:center;justify-content:center;transition:background 0.18s,box-shadow 0.18s;cursor:pointer;min-width:40px;min-height:40px;">
+            &#10148;
+        </button>
     </div>
 </div>
 <!-- Login Popup Modal -->

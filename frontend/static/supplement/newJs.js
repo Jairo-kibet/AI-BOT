@@ -402,7 +402,51 @@ if (convList) {
 
     // formating the response of the bot
     function formatResponse(text) {
-        return text
+        // Improved URL regex: matches http(s):// or www. and ensures full URL match, excluding trailing punctuation
+        const urlRegex = /(?:(?:https?:\/\/)|www\.)[a-zA-Z0-9\-._~:/?#@!$&'()*+,;=%]+/gi;
+        // Find all unique URLs in the text
+        const foundUrls = [];
+        let match;
+        let uniqueUrls = new Set();
+        while ((match = urlRegex.exec(text)) !== null) {
+            // Remove trailing punctuation
+            let url = match[0];
+            while (/[.,;:!?)]$/.test(url)) {
+                url = url.slice(0, -1);
+            }
+            // Normalize for deduplication (ignore http/https and www)
+            let norm = url.replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/$/, '');
+            if (!uniqueUrls.has(norm)) {
+                uniqueUrls.add(norm);
+                foundUrls.push(url);
+            }
+        }
+        // Replace all URLs in text with the first unique occurrence only
+        let replaced = text;
+        foundUrls.forEach(url => {
+            // Remove trailing punctuation for display
+            let displayUrl = url;
+            let trailing = '';
+            while (/[.,;:!?)]$/.test(displayUrl)) {
+                trailing = displayUrl.slice(-1) + trailing;
+                displayUrl = displayUrl.slice(0, -1);
+            }
+            // Build link HTML
+            let href = displayUrl.startsWith('http') ? displayUrl : 'http://' + displayUrl;
+            let linkHtml = `<a href="${href}" target="_blank" rel="noopener noreferrer" style="color:#1976d2;text-decoration:underline;word-break:break-all;">${displayUrl}</a>${trailing}`;
+            // Replace all occurrences of this url (with or without http/https/www) with the link, only the first time
+            let urlPattern = new RegExp(`((https?:\/\/)?(www\.)?)` + displayUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+            let replacedOnce = false;
+            replaced = replaced.replace(urlPattern, function(match) {
+                if (!replacedOnce) {
+                    replacedOnce = true;
+                    return linkHtml;
+                } else {
+                    return '';
+                }
+            });
+        });
+        return replaced
         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
         .replace(/\*(.*?)\*/g, '<span class="subheading">$1</span>')
         .replace(/\n/g, '<br>');
