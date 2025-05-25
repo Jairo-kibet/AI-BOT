@@ -537,7 +537,7 @@
             }
             .top-left-buttons {
                 top: 2.5;
-                left: 2.5%;
+                left: 3.5% !important;
             }
             .top-right-share {
                 top: 2.5%;
@@ -576,6 +576,15 @@
             }
             .card-divider, .right-cards {
                 display: none !important;
+            }
+            /* Ensure chat area is always below 13% from the top on small screens */
+            #chatArea {
+                margin-top: 13vh !important;
+            }
+            
+            .top-left-buttons i{
+                font-size: 1.5rem !important;
+
             }
         }
         @media (max-width: 400px) {
@@ -616,6 +625,9 @@
                 font-size: 11px;
             }
         }
+        #chatArea {
+                margin-top: 13vh !important;
+            }
     </style>
 </head>
 <body>
@@ -634,7 +646,7 @@
         </div>
     </div>
 
-    <div class="top-right-share">Share</div>
+    {% comment %} <div class="top-right-share">Share</div> {% endcomment %}
 
     {% if user.is_authenticated or username.userType == "student" %}
     <div class="login-banner" style="display: none;"><a href="{% url 'studentregister' %}" style="text-decoration: none; color: #fff;">Log in as student</a></div>
