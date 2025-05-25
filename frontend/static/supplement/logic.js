@@ -42,3 +42,4 @@ function getCSRFToken() {
     }
     return cookieValue;
 }
+

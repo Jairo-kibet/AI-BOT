@@ -9,8 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const featureCard = document.querySelectorAll('.feature-card');
     const infoCard = document.querySelectorAll('.info-card');
     
-    const uniChatId = getActiveChatId();
-    loadChatMessages(uniChatId);
+    var ChatId = getActiveChatId();
+    loadChatMessages(ChatId);
     // Add user message to chat
     function appendUserMessage(text) {
       const userDiv = document.createElement('div');

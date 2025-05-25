@@ -1,4 +1,3 @@
-
 // Sidebar close button logic for sidebar_section.html
 // This script assumes the sidebar is in a parent with id 'sidebarPanel' and overlay with id 'sidebarOverlay'
 document.addEventListener('DOMContentLoaded', function() {
@@ -6,10 +5,10 @@ document.addEventListener('DOMContentLoaded', function() {
     if (closeBtn) {
         closeBtn.addEventListener('click', function() {
             const centerText = document.getElementById('centerTextTag');
-            var sidebarPanel = window.parent.document.getElementById('sidebarPanel');
-            var sidebarOverlay = window.parent.document.getElementById('sidebarOverlay');
-            var mainContainer = window.parent.document.querySelector('.main-container');
-            var topLeftButtons = window.parent.document.querySelector('.top-left-buttons');
+            var sidebarPanel = document.getElementById('sidebarPanel');
+            var sidebarOverlay = document.getElementById('sidebarOverlay');
+            var mainContainer = document.querySelector('.main-container');
+            var topLeftButtons = document.querySelector('.top-left-buttons');
             if (sidebarPanel && sidebarOverlay && mainContainer && topLeftButtons) {
                 sidebarPanel.classList.remove('sidebar-visible');
                 sidebarOverlay.classList.remove('sidebar-visible');
@@ -81,19 +80,61 @@ document.addEventListener('DOMContentLoaded', function() {
     const topLeftButtons = document.querySelector('.top-left-buttons');
     const mainContainer = document.querySelector('.main-container');
     const centerText = document.getElementById('centerTextTag');
+    const chatInput = document.querySelector('.chat-input');
+    const cardsWrapper = document.querySelector('.cards-wrapper');
+
+    function fixChatInputAndCardsWrapper() {
+        if (window.innerWidth < 992) {
+            if (sidebarPanel) {
+                sidebarPanel.style.display = 'none';
+                sidebarPanel.classList.remove('sidebar-visible', 'open');
+            }
+            if (sidebarOverlay) {
+                sidebarOverlay.style.display = 'none';
+                sidebarOverlay.classList.remove('sidebar-visible', 'open');
+            }
+            if (mainContainer) mainContainer.classList.remove('sidebar-open');
+            if (topLeftButtons) topLeftButtons.classList.remove('hide-buttons');
+            if (centerText) centerText.style.display = '';
+            // Prevent sliding for chat-input and cards-wrapper
+            if (chatInput) {
+                chatInput.style.transform = 'translateX(-50%)';
+                chatInput.style.left = '50%';
+            }
+            if (cardsWrapper) cardsWrapper.style.transform = 'none';
+        } else {
+            // Reset chat-input style for desktop
+            if (chatInput) {
+                chatInput.style.transform = '';
+                chatInput.style.left = '';
+            }
+            if (cardsWrapper) cardsWrapper.style.transform = '';
+        }
+    }
+
+    // Initial fix on load
+    fixChatInputAndCardsWrapper();
+    // Also fix on resize
+    window.addEventListener('resize', fixChatInputAndCardsWrapper);
 
     function openSidebar() {
+        if (!sidebarPanel || !sidebarOverlay || !topLeftButtons || !mainContainer) return;
+        // Only allow opening if not on small screen, or if user explicitly toggles
         sidebarPanel.style.display = 'block';
         sidebarOverlay.style.display = 'block';
         setTimeout(() => {
             sidebarPanel.classList.add('sidebar-visible');
             sidebarOverlay.classList.add('sidebar-visible');
-            topLeftButtons.classList.add('hide-buttons');
-            mainContainer.classList.add('sidebar-open');
-            if(centerText) centerText.style.display = 'none';
+            // Only add sidebar-open if not on small screen
+            if(window.innerWidth >= 992) {
+                topLeftButtons.classList.add('hide-buttons');
+                mainContainer.classList.add('sidebar-open');
+                if(centerText) centerText.style.display = 'none';
+            }
         }, 10);
     }
     function closeSidebar() {
+        if (!sidebarPanel || !sidebarOverlay || !topLeftButtons || !mainContainer) return;
         sidebarPanel.classList.remove('sidebar-visible');
         sidebarOverlay.classList.remove('sidebar-visible');
         topLeftButtons.classList.remove('hide-buttons');
@@ -102,8 +143,18 @@ document.addEventListener('DOMContentLoaded', function() {
             sidebarPanel.style.display = 'none';
             sidebarOverlay.style.display = 'none';
             if(centerText) centerText.style.display = '';
+            // Prevent sliding for chat-input and cards-wrapper
+            if (window.innerWidth < 992) {
+                if (chatInput) {
+                    chatInput.style.transform = 'translateX(-50%)';
+                    chatInput.style.left = '50%';
+                }
+                if (cardsWrapper) cardsWrapper.style.transform = 'none';
+            }
         }, 350);
     }
-    sidebarToggle.addEventListener('click', openSidebar);
-    sidebarOverlay.addEventListener('click', closeSidebar);
+    if (sidebarToggle && sidebarPanel && sidebarOverlay) {
+        sidebarToggle.addEventListener('click', openSidebar);
+        sidebarOverlay.addEventListener('click', closeSidebar);
+    }
 });

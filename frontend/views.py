@@ -66,6 +66,7 @@ def homepPage(request):
         if not chat_conversations.exists():
             new_chat = ChatHistory.objects.create(userId=user, chat_heading="New Chat")
             chat_conversations = ChatHistory.objects.filter(userId=user).order_by('-date_created')
+            
         if not starred_chats.exists():
             starred_chats = None
         return render(request, "homePage.html", {"username": user, "chat_conversations": chat_conversations, "starred_chats": starred_chats})
