@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const newChatBtn = document.querySelector('.new-chat-btn');
-    if (newChatBtn) {
+    const newChatBtns = document.querySelectorAll('.new-chat-btn');
+    newChatBtns.forEach(function(newChatBtn) {
         newChatBtn.addEventListener('click', function(e) {
             e.preventDefault();
             fetch('/create-new-chat/', {
@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Error creating new chat:', error);
             });
         });
-    }
+    });
 });
 
 function getCSRFToken() {

@@ -252,6 +252,7 @@
             max-width: 240px;
             position: relative;
             box-sizing: border-box;
+            cursor: pointer;
         }
 
         .info-card p {
@@ -305,7 +306,7 @@
             font-size: 14px;
             resize: none;
             overflow: hidden;
-            min-height: 16px !important;
+            min-height: 36px;
             max-height: 120px;
         }
 
@@ -502,79 +503,87 @@
         }
         @media (max-width: 700px) {
             .main-container {
-                padding: 0 0 20px 0;
+                padding: 0 0 40px 0;
             }
-            .cards-wrapper {
-                flex-direction: column;
-                gap: 18px;
-                width: 100vw !important;
-                max-width: 100vw !important;
-                margin: 0 !important;
-                padding: 0 0 10px 0 !important;
-                box-sizing: border-box;
-                justify-content: flex-start;
-                align-items: stretch;
+            .top-left-buttons {
+                top: 2.5;
+                left: 2.5%;
+            }
+            .top-right-share {
+                top: 2.5%;
+                right: 2.5%;
+                padding: 7px 12px;
+                font-size: 12px;
+            }
+            .login-banner {
+                top: 20%;
+                font-size: 12px;
+                padding: 5px;
             }
             .center-text {
                 margin-top: 10%;
                 font-size: 14px;
-                width: 100vw !important;
-                max-width: 100vw !important;
-                box-sizing: border-box;
-                padding: 0 8px;
             }
-            .chat-input {
-                width: 100vw !important;
-                max-width: 100vw !important;
-                left: 0 !important;
-                transform: none !important;
-                border-radius: 0;
-                padding-left: 8px;
-                padding-right: 8px;
-                box-sizing: border-box;
-                justify-content: flex-start !important;
+            .center-text h1 {
+                font-size: 18px;
             }
-            .chat-input textarea {
-                font-size: 13px;
-                padding-left: 0;
-                padding-right: 0;
-                text-align: left !important;
+            .center-text .tag {
+                font-size: 12px;
+                padding: 6px 12px;
             }
-            #chatArea {
-                margin: 0 !important;
-                padding: 0 !important;
-                width: 100vw !important;
-                max-width: 100vw !important;
-                box-sizing: border-box;
-                display: flex !important;
-                flex-direction: column !important;
-                align-items: flex-start !important;
+            .feature-card {
+                width: 200px;
+                height: auto;
+                padding: 12px;
+                font-size: 12px;
+                background: #fff !important;
+                color: #111 !important;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+                border: 1px solid #eee;
             }
-            #chatArea > * {
-                margin: 0 !important;
-                width: 100% !important;
-                text-align: left !important;
+            .feature-card h4, .feature-card p, .feature-card i {
+                color: #111 !important;
+            }
+            .card-divider, .right-cards {
+                display: none !important;
             }
         }
         @media (max-width: 400px) {
             .center-text {
                 margin-top: 30%;
                 font-size: 12px;
-                width: 100vw !important;
-                max-width: 100vw !important;
-                padding: 0 2px;
             }
-            .cards-wrapper {
-                padding: 0 2px 10px 2px !important;
-                margin: 0 !important;
-                width: 100vw !important;
+        }
+
+        @media screen and (min-width: 400px) and (max-width: 500px) {
+            .main-container {
+                padding: 0 0 20px 0;
             }
-            .chat-input {
-                padding-left: 2px;
-                padding-right: 2px;
+            .top-right-share {
+                font-size: 10px;
+                padding: 5px 8px;
             }
-            #chatArea {
-                padding: 0 2px !important;
+            .login-banner {
+                font-size: 10px;
+                padding: 3px;
+                border-radius: 8px 0 0 8px;
+            }
+            .center-text {
+                font-size: 18px;
+                margin-top: 18%;
+            }
+            .center-text .tag {
+                font-size: 14px;
+                padding: 4px 8px;
+            }
+            .feature-card {
+                width: 120px;
+                height: auto;
+                padding: 8px;
+                font-size: 10px;
+            }
+            .feature-card h4 {
+                font-size: 11px;
             }
         }
     </style>
