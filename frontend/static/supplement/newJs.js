@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const infoCard = document.querySelectorAll('.info-card');
     
     var ChatId = getActiveChatId();
-    debugger;
+    
     loadChatMessages(ChatId);
     // Add user message to chat
     function appendUserMessage(text) {
@@ -322,10 +322,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     
     function showChatMessage() {
-      debugger;
+      
         // If cards are visible, animate them out and show chat area with animation
         if (leftCards.style.display !== 'none' && centerText.style.display !== 'none') {
-          debugger;
+          
           centerText.classList.add('slide-fade-up');
           leftCards.classList.add('slide-fade-up');
           let transitioned = false;
@@ -343,7 +343,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 leftCards.removeEventListener('transitionend', onTransitionEnd);
                 // First chat bubble with animation
             }
-            debugger;
+            
             leftCards.addEventListener('transitionend', onTransitionEnd);
             centerText.addEventListener('transitionend', onTransitionEnd);
         }
@@ -367,9 +367,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Fetch and display chat messages for a given chatId
 function loadChatMessages(chatId) {
-  debugger;
+  
   if (!chatId) return;
-  debugger;
+  
   chatWrapper.innerHTML = '';
   fetch(`/get-chat-messages/?chat_id=${encodeURIComponent(chatId)}`)
     .then(res => res.json())
@@ -381,12 +381,12 @@ function loadChatMessages(chatId) {
           appendBotMessageNoTyping(formatResponse(msg.bot_response));
         });
       } else {
-        debugger;
+        
         // Optionally handle empty chat (e.g., show a placeholder or do nothing)
         // chatWrapper.innerHTML = '<div class="empty-chat-msg">No messages yet.</div>';
       }
     });
-    debugger;
+    
     // Check if the chatId has messages; if not, show home page cards, else show messages
     fetch(`/get-chat-messages/?chat_id=${encodeURIComponent(chatId)}`)
       .then(res => res.json())
@@ -407,7 +407,7 @@ function showHomePageCards() {
     leftCards.style.display = 'flex';
     centerText.style.display = 'block';
     chatArea.style.display = 'none';
-    debugger;
+    
   }
   
 }
