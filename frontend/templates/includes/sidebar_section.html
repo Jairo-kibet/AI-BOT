@@ -390,6 +390,19 @@
     background:rgb(251, 249, 255) !important;
     transition: background 0.2s;
   }
+  /* Add hover and active effect for starred conversation items */
+.starred-conversations-section .conversation-item {
+  transition: background 0.18s, color 0.18s;
+  cursor: pointer;
+}
+.starred-conversations-section .conversation-item:hover {
+  background: #f3ecfc !important;
+  color: #5c3bff !important;
+}
+.starred-conversations-section .conversation-item.active {
+  background: #e3d6ff !important;
+  color: #5c3bff !important;
+}
   </style>
 <div class="sidebar-header d-col align-items-center gap-2 p-3">
     <div class="icon-gradient-btn" id="sidebarCloseBtn">
@@ -440,19 +453,21 @@
       <span style="color:#5c3bff;">Starred Conversations</span>
       <i class="bi bi-arrow-up-short ms-auto" style="font-size:18px; color:#5c3bff; margin-right:4px;"></i>
   </div>
-  {% if starred_chats %}
-    {% for starred_chat in starred_chats|dictsort:"date_created" %}
-      <div class="conversations px-3 starred-scrollable scrollable-conversations" data-chat-id="{{ starred_chat.chatId }}">
-        <div class="conversation-item" style="color:rgb(124, 122, 122);">
-          <i class="bi bi-star-fill" style="color:#ffffff; margin-right: 5px;"></i> {{ starred_chat.chat_heading }}
+  <div id="starredConversation">
+    {% if starred_chats %}
+      {% for starred_chat in starred_chats|dictsort:"date_created" %}
+        <div class="conversations px-3 starred-scrollable scrollable-conversations">
+          <div class="conversation-item" style="color:rgb(124, 122, 122);" data-chat-id="{{ starred_chat.chatId }}">
+            <i class="bi bi-star-fill" style="color:#ffffff; margin-right: 5px;"></i> {{ starred_chat.chat_heading }}
+          </div>
         </div>
+      {% endfor %}
+    {% else %}
+      <div class="px-3 text-center pt-2" style="font-size:13px; color:#999;">
+        No starred chats available.
       </div>
-    {% endfor %}
-  {% else %}
-    <div class="px-3 text-center pt-2" style="font-size:13px; color:#999;">
-      No starred chats available.
-    </div>
-  {% endif %}
+    {% endif %}
+  </div>
 </div>
 <div class="sidebar-footer mt-auto pb-2 mb-5" style="background: linear-gradient(90deg,#f8f6ff 60%,#f3ecfc 100%);">
   <div class="user-profile-card d-flex align-items-center shadow-sm" style="background: linear-gradient(90deg,#f8f6ff 60%,#f3ecfc 100%); border-radius: 16px; border: 1px solid rgba(164, 92, 255, 0.13); padding: 10px 16px;">
@@ -795,6 +810,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   }
+  
 });
 function getCSRFToken() {
   let cookieValue = null;

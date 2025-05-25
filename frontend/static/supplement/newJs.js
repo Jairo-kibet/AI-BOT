@@ -415,19 +415,85 @@ function showHomePageCards() {
 const convList = document.getElementById('conversationList');
 let prevActiveChatId = getActiveChatId();
 
+function scrollToActiveConversationItem(listElem, chatId) {
+  if (!listElem || !chatId) return;
+  const activeItem = listElem.querySelector(`.conversation-item[data-chat-id="${chatId}"]`);
+  if (activeItem) {
+    // Scroll so the active item is visible in the scrollable container
+    activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+  }
+}
+
 if (convList) {
   convList.addEventListener('click', function(e) {
     const item = e.target.closest('.conversation-item');
     if (item) {
       const chatId = item.getAttribute('data-chat-id');
-      // If the clicked chat is already active, do nothing
-      if (chatId === prevActiveChatId) return;
-      // Update active class
-      convList.querySelectorAll('.conversation-item').forEach(function(ci) {
+      // Remove active from all conversation items in both lists
+      document.querySelectorAll('.conversation-item').forEach(function(ci) {
         ci.classList.remove('active');
       });
+      // Set active on clicked item
       item.classList.add('active');
+      // Also set active on the corresponding item in starredConversation (if exists)
+      const starredItem = document.querySelector(`#starredConversation .conversation-item[data-chat-id="${chatId}"]`);
+      if (starredItem) starredItem.classList.add('active');
       prevActiveChatId = chatId;
+
+      // Scroll both lists to the active item
+      scrollToActiveConversationItem(convList, chatId);
+      const starredListElem = document.getElementById('starredConversation');
+      scrollToActiveConversationItem(starredListElem, chatId);
+
+      // Use a flag to delay only on the first click
+      if (!window._firstChatLoadDone) {
+        window._firstChatLoadDone = true;
+        setTimeout(() => {
+          loadChatMessages(chatId);
+        }, 500); // Delay only for the first click
+      } else {
+        // Check if the selected chat has any messages in the database
+        fetch(`/get-chat-messages/?chat_id=${encodeURIComponent(chatId)}`)
+          .then(res => res.json())
+          .then(data => {
+            if (data && Array.isArray(data.messages) && data.messages.length === 0) {
+              leftCards.style.display = '';
+              centerText.style.display = '';
+              chatArea.style.display = 'none';
+            } else {
+              loadChatMessages(chatId); // Load messages if chat is not empty
+            }
+          });
+      }
+    }
+  });
+}
+
+// Attach click event to starred conversation items to load messages
+const starredList = document.getElementById('starredConversation');
+let prevStarActiveChatId = getActiveChatId();
+
+if (starredList) {
+  starredList.addEventListener('click', function(e) {
+    const item = e.target.closest('.conversation-item');
+    if (item) {
+      const chatId = item.getAttribute('data-chat-id');
+      // Remove active from all conversation items in both lists
+      document.querySelectorAll('.conversation-item').forEach(function(ci) {
+        ci.classList.remove('active');
+      });
+      // Set active on clicked item
+      item.classList.add('active');
+      // Also set active on the corresponding item in conversationList (if exists)
+      const mainItem = document.querySelector(`#conversationList .conversation-item[data-chat-id="${chatId}"]`);
+      if (mainItem) mainItem.classList.add('active');
+      prevStarActiveChatId = chatId;
+
+      // Scroll both lists to the active item
+      scrollToActiveConversationItem(starredList, chatId);
+      const convListElem = document.getElementById('conversationList');
+      scrollToActiveConversationItem(convListElem, chatId);
+
       // Use a flag to delay only on the first click
       if (!window._firstChatLoadDone) {
         window._firstChatLoadDone = true;
