@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const infoCard = document.querySelectorAll('.info-card');
     
     var ChatId = getActiveChatId();
+    debugger;
     loadChatMessages(ChatId);
     // Add user message to chat
     function appendUserMessage(text) {
@@ -321,27 +322,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
     
     function showChatMessage() {
+      debugger;
         // If cards are visible, animate them out and show chat area with animation
         if (leftCards.style.display !== 'none' && centerText.style.display !== 'none') {
-            leftCards.classList.add('slide-fade-up');
-            centerText.classList.add('slide-fade-up');
-            let transitioned = false;
-            function onTransitionEnd() {
+          debugger;
+          centerText.classList.add('slide-fade-up');
+          leftCards.classList.add('slide-fade-up');
+          let transitioned = false;
+          debugger
+          function onTransitionEnd() {
+            debugger
                 if (transitioned) return;
                 transitioned = true;
                 leftCards.style.display = 'none';
                 centerText.style.display = 'none';
                 chatArea.style.display = 'flex';
-                leftCards.classList.remove('slide-fade-up');
                 centerText.classList.remove('slide-fade-up');
-                leftCards.removeEventListener('transitionend', onTransitionEnd);
+                leftCards.classList.remove('slide-fade-up');
                 centerText.removeEventListener('transitionend', onTransitionEnd);
+                leftCards.removeEventListener('transitionend', onTransitionEnd);
                 // First chat bubble with animation
             }
+            debugger;
             leftCards.addEventListener('transitionend', onTransitionEnd);
             centerText.addEventListener('transitionend', onTransitionEnd);
-        } 
-    }
+        }
+    } 
 
 
     // Get the active chatId (from the currently active chat-item)
@@ -361,33 +367,67 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Fetch and display chat messages for a given chatId
 function loadChatMessages(chatId) {
+  debugger;
   if (!chatId) return;
+  debugger;
   chatWrapper.innerHTML = '';
   fetch(`/get-chat-messages/?chat_id=${encodeURIComponent(chatId)}`)
     .then(res => res.json())
     .then(data => {
-      if (data && Array.isArray(data.messages)) {
+      if (data && Array.isArray(data.messages) && data.messages.length > 0) {
         data.messages.forEach(msg => {
+          showChatMessage();
           appendUserMessage(msg.input_query);
           appendBotMessageNoTyping(formatResponse(msg.bot_response));
         });
+      } else {
+        debugger;
+        // Optionally handle empty chat (e.g., show a placeholder or do nothing)
+        // chatWrapper.innerHTML = '<div class="empty-chat-msg">No messages yet.</div>';
       }
     });
+    debugger;
+    // Check if the chatId has messages; if not, show home page cards, else show messages
+    fetch(`/get-chat-messages/?chat_id=${encodeURIComponent(chatId)}`)
+      .then(res => res.json())
+      .then(data => {
+      if (data && Array.isArray(data.messages) && data.messages.length === 0) {
+        showHomePageCards();
+      } else {
+        
+        // Messages already loaded above, do nothing
+      }
+      });
+
+
 } 
 
+function showHomePageCards() {
+  if (leftCards.style.display == 'none' && centerText.style.display == 'none') {
+    leftCards.style.display = 'flex';
+    centerText.style.display = 'block';
+    chatArea.style.display = 'none';
+    debugger;
+  }
+  
+}
 // Attach click event to conversation items to load messages
 const convList = document.getElementById('conversationList');
+let prevActiveChatId = getActiveChatId();
+
 if (convList) {
   convList.addEventListener('click', function(e) {
     const item = e.target.closest('.conversation-item');
     if (item) {
+      const chatId = item.getAttribute('data-chat-id');
+      // If the clicked chat is already active, do nothing
+      if (chatId === prevActiveChatId) return;
+      // Update active class
       convList.querySelectorAll('.conversation-item').forEach(function(ci) {
         ci.classList.remove('active');
       });
       item.classList.add('active');
-      // Load messages for this chatId
-      const chatId = item.getAttribute('data-chat-id');
-      showChatMessage(); // Show user message with animation
+      prevActiveChatId = chatId;
       // Use a flag to delay only on the first click
       if (!window._firstChatLoadDone) {
         window._firstChatLoadDone = true;
