@@ -329,9 +329,9 @@ document.addEventListener('DOMContentLoaded', () => {
           centerText.classList.add('slide-fade-up');
           leftCards.classList.add('slide-fade-up');
           let transitioned = false;
-          debugger
+          
           function onTransitionEnd() {
-            debugger
+            
                 if (transitioned) return;
                 transitioned = true;
                 leftCards.style.display = 'none';
