@@ -55,7 +55,7 @@
             transition: left 0.35s cubic-bezier(0.4,0,0.2,1);
         }
         .main-container.sidebar-open .chat-input {
-            left: calc(50% + 70px); /* Move by half sidebar width */
+            left: calc(70% + 70px); /* Move by half sidebar width */
         }
         @media (max-width: 900px) {
             .main-container.sidebar-open .center-text,
@@ -63,7 +63,7 @@
                 transform: none;
             }
             .main-container.sidebar-open .chat-input {
-                left: 50%;
+                margin-left: auto;
             }
         }
         /* Ensure chat-input stays centered in visible area */
@@ -172,6 +172,7 @@
             padding: 10px;
             border-radius: 12px 0 0 12px;
             font-weight: 500;
+            font-size: inherit;
             transition: box-shadow 0.2s, background 0.2s;
             box-shadow: 0 2px 12px rgba(92, 59, 255, 0.10);
             cursor: pointer;
@@ -317,6 +318,10 @@
             font-size: 18px;
             color: #aaa;
         }
+        #chatArea {
+            margin-top: 13vh !important;
+            max-width: auto !important;
+        }
 
         .chat-input {
             position: fixed;
@@ -445,6 +450,10 @@
             .left-cards {
                 gap: 16px;
             }
+            #chatArea {
+                margin-top: 13vh !important;
+                width: calc(80% - 180px) !important;
+            }
         }
         @media (max-width: 900px) {
             .main-container {
@@ -460,6 +469,10 @@
             .cards-viewer {
                 flex-direction: column;
                 align-items: center;
+            }
+            #chatArea {
+                margin-top: 13vh !important;
+                width: calc(80% - 130px) !important;
             }
         }
         @media screen and (min-width: 800px) and (max-width: 900px) {
@@ -588,10 +601,13 @@
                 font-size: 1.5rem !important;
 
             }
+            #chatArea {
+                width: 80% !important;
+            }
         }
         @media (max-width: 400px) {
             .center-text {
-                margin-top: 30%;
+                margin-top: 13vh !important;
                 font-size: 12px;
             }
         }
@@ -630,6 +646,13 @@
         #chatArea {
                 margin-top: 13vh !important;
             }
+        @media (min-width: 1200px) {
+            #chatArea {
+                margin-top: 13vh !important;
+                width: calc(75%) !important;
+                margin: auto !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -745,9 +768,9 @@
             </div>
             <!-- Chat area for displaying user queries -->
             {% if active_chat and active_chat.messages.count == 0 %}
-            <div id="chatArea" style="display:none; flex-direction:column; gap:10px; align-items:left; width:60%;">
+            <div id="chatArea" style="display:none; flex-direction:column; gap:10px; align-items:left;">
             {% else %}
-            <div id="chatArea" style="display:flex; flex-direction:column; gap:10px; align-items:left; width:60%;">
+            <div id="chatArea" style="display:flex; flex-direction:column; gap:10px; align-items:left;">
             {% endif %}
         </div>
     </div>
