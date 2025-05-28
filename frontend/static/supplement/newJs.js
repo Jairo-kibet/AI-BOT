@@ -732,15 +732,19 @@ if (starredList) {
       soundwaveIcon.title = 'Speak your query';
       let recognition;
       let silenceTimeout = null;
+      let listening = false;
+      let userStopped = true;
+      let finalTranscript = '';
+      let interimTranscript = '';
+      let lastInputValue = '';
+      let restartAfterEnd = false;
+
       if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         recognition = new SpeechRecognition();
         recognition.lang = 'en-IN'; // Set the language for recognition
         recognition.interimResults = true; // Enable interim results for live transcription
         recognition.maxAlternatives = 1;
-        let listening = false;
-        let finalTranscript = '';
-        let userStopped = true; // Track if user manually stopped
 
         function clearSilenceTimer() {
           if (silenceTimeout) {
@@ -762,19 +766,24 @@ if (starredList) {
         soundwaveIcon.addEventListener('click', function() {
           if (!listening) {
             userStopped = false;
+            finalTranscript = '';
+            interimTranscript = '';
+            lastInputValue = inputField ? inputField.value : '';
             recognition.start();
             soundwaveIcon.style.color = '#007bff';
             soundwaveIcon.style.animation = 'pulse-mic 1s infinite';
+            listening = true;
           } else {
             userStopped = true;
             recognition.stop();
             soundwaveIcon.style.color = '';
             soundwaveIcon.style.animation = '';
+            listening = false;
           }
-          listening = !listening;
         });
+
         recognition.onresult = function(event) {
-          let interimTranscript = '';
+          interimTranscript = '';
           for (let i = event.resultIndex; i < event.results.length; ++i) {
             if (event.results[i].isFinal) {
               finalTranscript += event.results[i][0].transcript;
@@ -783,54 +792,28 @@ if (starredList) {
             }
           }
           if (inputField) {
-            const fullText = (finalTranscript + interimTranscript).replace(/^\s+/, '');
-            // Always animate from current value to fullText, even if fullText grows
-            if (window.speechLetterInterval) {
-              clearInterval(window.speechLetterInterval);
-              window.speechLetterInterval = null;
+            // Always append recognized words to the end of the input field
+            let base = lastInputValue;
+            let spoken = (finalTranscript + interimTranscript).replace(/^\s+/, '');
+            inputField.value = base + spoken;
+            // Auto-resize textarea if needed
+            if (inputField.tagName === 'TEXTAREA') {
+              inputField.style.height = 'auto';
+              inputField.style.height = (inputField.scrollHeight) + 'px';
             }
-            let current = inputField.value;
-            let idx = 0;
-            // If the transcript shrinks (e.g. user paused and resumed), reset to fullText
-            if (current.length > fullText.length || !fullText.startsWith(current)) {
-              current = '';
-              inputField.value = '';
-              if (inputField.tagName === 'TEXTAREA') {
-                inputField.style.height = 'auto';
-                inputField.style.height = (inputField.scrollHeight) + 'px';
-              }
-            }
-            idx = current.length;
-            window.speechLetterInterval = setInterval(() => {
-              if (idx < fullText.length) {
-                current += fullText[idx];
-                inputField.value = current;
-                // Auto-resize textarea if needed
-                if (inputField.tagName === 'TEXTAREA') {
-                  inputField.style.height = 'auto';
-                  inputField.style.height = (inputField.scrollHeight) + 'px';
-                }
-                idx++;
-              } else {
-                clearInterval(window.speechLetterInterval);
-                window.speechLetterInterval = null;
-              }
-            }, 22);
           }
           // Reset silence timer on every result
           startSilenceTimer();
         };
+
         recognition.onend = function() {
           soundwaveIcon.style.color = '';
           soundwaveIcon.style.animation = '';
           listening = false;
           clearSilenceTimer();
-          if (window.speechLetterInterval) {
-            clearInterval(window.speechLetterInterval);
-            window.speechLetterInterval = null;
-          }
-          // If user did not manually stop, restart recognition for continuous listening
           if (!userStopped) {
+            // If user did not manually stop, restart recognition for continuous listening
+            lastInputValue = inputField ? inputField.value : '';
             recognition.start();
             soundwaveIcon.style.color = '#007bff';
             soundwaveIcon.style.animation = 'pulse-mic 1s infinite';
@@ -838,6 +821,7 @@ if (starredList) {
             return;
           }
           finalTranscript = '';
+          interimTranscript = '';
           // Ensure blinking cursor in input field after speech ends
           if (inputField) {
             inputField.focus();
@@ -853,6 +837,7 @@ if (starredList) {
           listening = false;
           userStopped = true;
           finalTranscript = '';
+          interimTranscript = '';
           clearSilenceTimer();
         };
         recognition.onaudiostart = function() {
