@@ -30,7 +30,8 @@ document.addEventListener('DOMContentLoaded', function() {
     var searchBtn = document.getElementById('sidebarSearchBtn');
     var newChatBtn = document.querySelector('.sidebar .new-chat-btn');
     var searchInput = searchBtn ? searchBtn.querySelector('input') : null;
-    if (searchBtn && newChatBtn && searchInput) {
+    var conversationList = document.getElementById('conversationList');
+    if (searchBtn && newChatBtn && searchInput && conversationList) {
         searchBtn.addEventListener('click', function(e) {
             if (!searchBtn.classList.contains('expanded')) {
                 searchBtn.classList.add('expanded');
@@ -52,6 +53,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 searchBtn.classList.remove('expanded');
                 newChatBtn.classList.remove('shrink-btn');
             }
+        });
+        // --- SEARCH FUNCTIONALITY ---
+        searchInput.addEventListener('input', function() {
+            var filter = searchInput.value.trim().toLowerCase();
+            var items = conversationList.querySelectorAll('.conversation-item');
+            items.forEach(function(item) {
+                var text = item.textContent || '';
+                if (text.toLowerCase().indexOf(filter) > -1) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
         });
     }
 })();
