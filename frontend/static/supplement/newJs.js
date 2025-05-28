@@ -141,7 +141,8 @@ document.addEventListener('DOMContentLoaded', () => {
             <span style="margin: 0; color: #bbb;">|</span>
             <i class="bi bi-hand-thumbs-down" title="Dislike"></i>
             <span style="margin: 0; color: #bbb;">|</span>
-            <i class="bi bi-clipboard copy-bot-response" title="Copy"></i>
+            <i class="bi bi-clipboard copy-bot-response" title="Copy" id="chatClipboardIcon"></i>
+          <span id="clipboardCopiedMsg" style="display:none;position:absolute;left:36px;top:-8px;background:#222;color:#fff;padding:2px 10px;border-radius:8px;font-size:13px;z-index:999;box-shadow:0 2px 8px rgba(0,0,0,0.13);">Copied!</span>
           </div>
           <button class="regenerate-btn">
             <i class="bi bi-arrow-repeat"> Regenerate</i>
@@ -309,6 +310,35 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
       chatWrapper.appendChild(botMsg);
       scrollChatToBottom();
+    }
+
+    // Add bot loading message with enhanced animated dots
+    function appendBotLoadingMessage() {
+      // Remove any existing loading message (avoid duplicates)
+      const oldLoading = chatWrapper.querySelector('.bot-msg.bot-loading');
+      if (oldLoading) oldLoading.remove();
+      const botMsg = document.createElement('div');
+      botMsg.className = 'bot-msg bot-loading';
+      botMsg.innerHTML = `
+        <div class="bot-typing-content" style="display:flex;justify-content:left;align-items:left;height:38px; margin-left:50px;">
+          <span class="dot-dot-dot-loading">
+            <span class="dot dot1"></span>
+            <span class="dot dot2"></span>
+            <span class="dot dot3"></span>
+          </span>
+        </div>
+      `;
+      chatWrapper.appendChild(botMsg);
+      scrollChatToBottom();
+      return botMsg;
+    }
+    // Remove the loading message
+    function removeBotLoadingMessage() {
+      const loadingMsg = chatWrapper.querySelector('.bot-msg.bot-loading');
+      if (loadingMsg) {
+        if (loadingMsg._dotInterval) clearInterval(loadingMsg._dotInterval);
+        loadingMsg.remove();
+      }
     }
 
     // Ensure chat area always leaves 70px above chat-input
@@ -522,12 +552,13 @@ if (starredList) {
     function handleChatInput() {
       const message = inputField.value.trim();
       if (!message) return;
-
       // Get active chatId
       const chatId = getActiveChatId();
       showChatMessage(); // Show user message with animation
       appendUserMessage(message);
       inputField.value = '';
+      // Show loading effect before bot response
+      appendBotLoadingMessage();
       fetchBotResponse(message, chatId);
     }
 
@@ -616,6 +647,7 @@ if (starredList) {
       })
         .then(response => response.json())
         .then(data => {
+          removeBotLoadingMessage(); // Remove loading effect
           if (data && data.response) {
             const formattedText = formatResponse(data.response);
             appendBotMessageTyping(formattedText); // response with typing effect
@@ -640,8 +672,9 @@ if (starredList) {
           }
         })
         .catch(error => {
+          removeBotLoadingMessage(); // Remove loading effect
           console.error('Bot error:', error);
-          appendBotMessage("<p>Oops! Something went wrong. Please try again.</p>");
+          appendBotMessageTyping("<p>Oops! Something went wrong. Please try again.</p>");
         });
     }
 
@@ -698,6 +731,7 @@ if (starredList) {
       soundwaveIcon.style.cursor = 'pointer';
       soundwaveIcon.title = 'Speak your query';
       let recognition;
+      let silenceTimeout = null;
       if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         recognition = new SpeechRecognition();
@@ -706,7 +740,25 @@ if (starredList) {
         recognition.maxAlternatives = 1;
         let listening = false;
         let finalTranscript = '';
-        let userStopped = false; // Track if user manually stopped
+        let userStopped = true; // Track if user manually stopped
+
+        function clearSilenceTimer() {
+          if (silenceTimeout) {
+            clearTimeout(silenceTimeout);
+            silenceTimeout = null;
+          }
+        }
+        function startSilenceTimer() {
+          clearSilenceTimer();
+          silenceTimeout = setTimeout(() => {
+            userStopped = true;
+            recognition.stop();
+            soundwaveIcon.style.color = '';
+            soundwaveIcon.style.animation = '';
+            listening = false;
+          }, 3000); // 3 seconds of silence
+        }
+
         soundwaveIcon.addEventListener('click', function() {
           if (!listening) {
             userStopped = false;
@@ -765,11 +817,14 @@ if (starredList) {
               }
             }, 22);
           }
+          // Reset silence timer on every result
+          startSilenceTimer();
         };
         recognition.onend = function() {
           soundwaveIcon.style.color = '';
           soundwaveIcon.style.animation = '';
           listening = false;
+          clearSilenceTimer();
           if (window.speechLetterInterval) {
             clearInterval(window.speechLetterInterval);
             window.speechLetterInterval = null;
@@ -798,6 +853,14 @@ if (starredList) {
           listening = false;
           userStopped = true;
           finalTranscript = '';
+          clearSilenceTimer();
+        };
+        recognition.onaudiostart = function() {
+          // Start silence timer when audio starts
+          startSilenceTimer();
+        };
+        recognition.onsoundend = function() {
+          // Optionally, you could stop on sound end, but on silence timer is more robust
         };
       } else {
         soundwaveIcon.addEventListener('click', function() {
@@ -814,12 +877,21 @@ if (starredList) {
     }
   });
 
-  // Enhance chat input: auto-expand textarea logic
+  // Enhance chat input: auto-expand textarea logic and make it scrollable at max height
   const chatInputBox = document.getElementById('chatInputBox');
   if (chatInputBox && chatInputBox.tagName === 'TEXTAREA') {
     function autoResizeTextarea() {
       chatInputBox.style.height = 'auto';
-      chatInputBox.style.height = (chatInputBox.scrollHeight) + 'px';
+      // Set a max height (e.g., 160px), after which it scrolls
+      const maxHeight = 160;
+      chatInputBox.style.overflowY = 'hidden';
+      if (chatInputBox.scrollHeight > maxHeight) {
+        chatInputBox.style.height = maxHeight + 'px';
+        chatInputBox.style.overflowY = 'auto';
+      } else {
+        chatInputBox.style.height = chatInputBox.scrollHeight + 'px';
+        chatInputBox.style.overflowY = 'hidden';
+      }
     }
     chatInputBox.addEventListener('input', autoResizeTextarea);
     // Initial resize
@@ -829,7 +901,43 @@ if (starredList) {
         setTimeout(() => {
           chatInputBox.value = '';
           chatInputBox.style.height = 'auto';
+          chatInputBox.style.overflowY = 'hidden';
         }, 10);
       }
     });
   }
+//# sourceMappingURL=chat.js.map
+// Add minimal CSS for enhanced dot-dot-dot animation if not present
+if (!document.getElementById('dot-dot-dot-style')) {
+  const style = document.createElement('style');
+  style.id = 'dot-dot-dot-style';
+  style.innerHTML = `
+    .dot-dot-dot-loading {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      justify-content: center;
+      min-width: 60px;
+      height: 32px;
+    }
+    .dot-dot-dot-loading .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #5c3bff 60%, #ff7e5f 100%);
+      opacity: 0.7;
+      animation: dot-bounce 1.2s infinite cubic-bezier(.6,.05,.4,.95);
+      margin: 0 2px;
+      box-shadow: 0 2px 8px #5c3bff22;
+    }
+    .dot-dot-dot-loading .dot1 { animation-delay: 0s; }
+    .dot-dot-dot-loading .dot2 { animation-delay: 0.18s; }
+    .dot-dot-dot-loading .dot3 { animation-delay: 0.36s; }
+    @keyframes dot-bounce {
+      0%, 80%, 100% { transform: translateY(0) scale(1); opacity: 0.7; }
+      30% { transform: translateY(-10px) scale(1.15); opacity: 1; }
+      50% { transform: translateY(-6px) scale(1.08); opacity: 0.9; }
+    }
+  `;
+  document.head.appendChild(style);
+}
