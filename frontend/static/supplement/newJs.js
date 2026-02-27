@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const botMsg = document.createElement('div');
       botMsg.className = 'bot-msg bot-msg-content';
       botMsg.innerHTML = `
-        <div class="bot-header">GALGOTIAS AI-Bot</div>
+        <div class="bot-header">SEKU AI-Bot</div>
         <p class="bot-typing-content"></p>
         <div class="bot-actions" style="display:none;">
           <div class="reaction-group">
@@ -293,7 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const botMsg = document.createElement('div');
       botMsg.className = 'bot-msg bot-msg-content';
       botMsg.innerHTML = `
-        <div class="bot-header">GALGOTIAS AI-Bot</div>
+        <div class="bot-header">SEKU AI-Bot</div>
         <p class="bot-typing-content">${htmlContent}</p>
         <div class="bot-actions" style="display:none;">
           <div class="reaction-group">

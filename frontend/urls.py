@@ -1,7 +1,8 @@
 from django.urls import path
-from .views import home, signUp, newPage, sidebar, login, studentSignUp, homepPage, chatIndex, session_exit, login_popup
+from .views import home, signUp, newPage, sidebar, login, studentSignUp, homepPage, chatIndex, session_exit, login_popup, seku_data_view
 from .utils import ask
 from .validators import create_new_chat, chat_rename, chat_star, chat_delete, get_chat_messages
+
 
 urlpatterns = [
     path('', home, name='home'),
@@ -20,4 +21,6 @@ urlpatterns = [
     path('chat-star/', chat_star, name='chat_star'),
     path('chat-delete/', chat_delete, name='chat_delete'),
     path('get-chat-messages/', get_chat_messages, name='get_chat_messages'),
+     path("api/seku-data/", seku_data_view, name="seku_data"),
+     path("ask/", ask, name="ask"),
 ]

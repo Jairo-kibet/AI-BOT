@@ -499,25 +499,30 @@
 <div class="container-fluid">
   <!-- Left Side -->
   <div class="left">
-    <h1>AcadBot</h1>
-    <h2>Welcome to your<br>Academic Companion.</h2>
-    <p class="tagline">Learn faster, ask smarter, achieve greater.</p>
+    <h1>SEKU AI-Bot Academic Intelligence System</h1>
+    <h2>Welcome to <br> SEKU AI-Bot.</h2>
+    <p class="tagline">Intelligent Access. Instant Guidance. Academic Excellence.</p>
     <p class="desc">
-      "Create your account to access AcadBot — your personal AI academic assistant.
-      Get instant answers, clear explanations, and round-the-clock support for all your study needs.
-      Start your journey toward smarter, faster, and more effective learning today!"
+      "Create your account to access the SEKU AI-Bot Academic Intelligence System —
+      an advanced digital platform designed to provide real-time academic information,
+      automated guidance on programmes, admissions, fees, timetables, and student services.
+      Empower your academic journey with fast, reliable, and AI-driven support."
     </p>
     <div class="reply-box">
       <i class="bi bi-emoji-smile" id="emoji-btn"></i>
-      <input type="text" placeholder="Write your feedback here..." />
+      <input type="text" placeholder="Share your thoughts about SEKU AI-Bot..." />
       <button>&#10148;</button>
     </div>
   </div>
 
   <!-- Right Side -->
   <div class="right">
-    <h3>Sign up</h3>
-    <p class="sub">Create an account to get personalized answers about courses, fees, admissions, and student life. Designed to guide every step of the way.</p>
+    <h3>Register</h3>
+    <p class="sub">
+      Sign up to experience personalized academic assistance powered by SEKU AI-Bot.
+      Access accurate information on courses, fees, admissions, timetables,
+      and campus services — all within one intelligent system.
+    </p>
 
     <form method="POST" action="/sign-up/">
       {% csrf_token %}
@@ -532,28 +537,28 @@
       </div>
 
       <p class="form-note">
-        By registering for an account, you are consenting to our
-        <a href="#">Terms of service</a> and confirming that you have reviewed and accepted the
-        <a href="#">Global Privacy Statement</a>.
+        By registering, you agree to our
+        <a href="#">Terms of Service</a> and confirm that you have reviewed and accepted the
+        <a href="#">Privacy Policy</a>.
       </p>
 
-      <button type="submit" class="btn-gradient text-center">Get Started</button>
+      <button type="submit" class="btn-gradient text-center">Create Account</button>
     </form>
 
-
-    <div class="divider"><span>Or better yet...</span></div>
+    <div class="divider"><span>Or</span></div>
 
     <div class="d-grid gap-2">
       <a class="social-btn" href="{% url 'studentregister' %}" role="button">
         <i class="fa fa-person-fill"></i>
-        Continue as Student
+        Register as Student
       </a>
       <p class="login-link text-center">
-        Already have a student account? <a href="{% url 'login' %}">Login</a>
+        Already registered? <a href="{% url 'login' %}">Sign In</a>
       </p>
     </div>
   </div>
 </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@4.6.4/dist/index.js"></script>
   <script src="{% static 'js/scripts.js' %}"></script>
 </body>

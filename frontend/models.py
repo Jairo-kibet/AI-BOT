@@ -2,18 +2,41 @@ from django.db import models
 
 # Create your models here.
 
+
+from django.contrib.auth.hashers import make_password, check_password
+
+
 class User(models.Model):
     userId = models.AutoField(primary_key=True)
     userEmail = models.EmailField(max_length=150, unique=True)
     userPassword = models.CharField(max_length=150)
-    userType = models.CharField(max_length=50, choices=[('admin', 'Admin'), ('student', 'Student'), ('teacher', 'Teacher'), ('not student', 'Not Student')], default='not student')
+    userType = models.CharField(
+        max_length=50,
+        choices=[
+            ('admin', 'Admin'),
+            ('student', 'Student'),
+            ('teacher', 'Teacher'),
+            ('not student', 'Not Student')
+        ],
+        default='not student'
+    )
 
     def __str__(self):
-        return self.username
-    def __repr__(self):
-        return f"User({self.username}, {self.email})"
+        return self.userEmail   # ✅ Fixed (no more username error)
+
     def save(self, *args, **kwargs):
+        # Hash password before saving (if not already hashed)
+        if not self.userPassword.startswith('pbkdf2_'):
+            self.userPassword = make_password(self.userPassword)
         super().save(*args, **kwargs)
+
+    def check_password(self, raw_password):
+        return check_password(raw_password, self.userPassword)
+
+    @property
+    def custom_user_id(self):
+        return f"stu{self.userId:05d}"
+
         # Add any additional logic here if needed
 
     
