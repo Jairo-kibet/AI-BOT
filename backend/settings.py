@@ -1,7 +1,8 @@
 
 from pathlib import Path
 import os
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+from dotenv import load_dotenv
+load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -9,6 +10,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+# Groq API key (for your chatbot)
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 SECRET_KEY = 'django-insecure-vr(8%(lr)-xb0=8viwjv%r7+9v2w16er%va!+8ne%9)=ox9)hh'
 
 # SECURITY WARNING: don't run with debug turned on in production!
