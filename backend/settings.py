@@ -36,7 +36,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenose.middleware.WhiteNoiseMiddleware'
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -147,9 +147,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 import os
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'frontend', 'static'),
-]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'frontend', 'static'),]
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -161,7 +162,7 @@ JAZZMIN_SETTINGS = {
     "site_title": "SEKU NEXORA Admin",  # Browser tab title
     "site_header": "SEKU NEXORA AI",    # Top-left header
     "site_brand": "NEXORA AI",          # Branding text in sidebar
-    "site_logo": "assets\seku.jpeg",  # Path to your logo
+    "site_logo": "assets/seku.jpeg",  # Path to your logo
     "welcome_sign": "Welcome to SEKU NEXORA AI Admin",
     "copyright": "SEKU NEXORA ICT & Media Team",
     "search_model": ["auth.User", "auth.Group"],
