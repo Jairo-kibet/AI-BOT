@@ -17,7 +17,11 @@ SECRET_KEY = 'django-insecure-vr(8%(lr)-xb0=8viwjv%r7+9v2w16er%va!+8ne%9)=ox9)hh
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+      "sekusmartcampus.onrender.com",
+    "127.0.0.1",
+    "localhost",
+]
 
 
 # Application definition
