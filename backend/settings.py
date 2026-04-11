@@ -2,7 +2,6 @@
 from pathlib import Path
 import os
 from dotenv import load_dotenv
-load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -11,8 +10,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # Groq API key (for your chatbot)
+load_dotenv(BASE_DIR / ".env")
+
+SECRET_KEY = os.getenv("SECRET_KEY")
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-SECRET_KEY = 'django-insecure-vr(8%(lr)-xb0=8viwjv%r7+9v2w16er%va!+8ne%9)=ox9)hh'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -74,31 +75,29 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
 
-
 if ENVIRONMENT == "development":
-    # Use MariaDB 12.1 even in development
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.mysql",
-            "NAME": os.getenv("DB_NAME_DEV", "sekucu"),
-            "USER":  os.getenv("DB_USER_DEV", "root"),
-            "PASSWORD": os.getenv("DB_PASSWORD_DEV","jktech"),  # replace with MariaDB 12.1 password
-            "HOST": os.getenv("DB_HOST_DEV","127.0.0.1"),
-            "PORT":  os.getenv("DB_PORT_DEV", "3307"),               # MariaDB 12.1 port
+            "NAME": os.getenv("DB_NAME_DEV", "smartcampus"),
+            "USER": os.getenv("DB_USER_DEV", "root"),
+            "PASSWORD": os.getenv("DB_PASSWORD_DEV", ""),  # XAMPP = empty password
+            "HOST": os.getenv("DB_HOST_DEV", "127.0.0.1"),
+            "PORT": os.getenv("DB_PORT_DEV", "3306"),  # XAMPP MySQL port
             "OPTIONS": {
                 "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
             },
         }
     }
+
 else:
-    # Production
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.mysql",
-            "NAME": os.getenv("DB_NAME_DEV", "seku ai-bot"),
+            "NAME": os.getenv("DB_NAME_DEV", "smartcampus"),
             "USER": os.getenv("DB_USER_DEV", "root"),
-            "PASSWORD": os.getenv("DB_PASSWORD_DEV", ""),
-            "HOST": os.getenv("DB_HOST_DEV", "localhost"),
+            "PASSWORD": os.getenv("DB_PASSWORD_DEV", "jktech"),
+            "HOST": os.getenv("DB_HOST_DEV", "127.0.0.1"),
             "PORT": os.getenv("DB_PORT_DEV", "3306"),
             "OPTIONS": {
                 "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
@@ -106,14 +105,11 @@ else:
         }
     }
 
-
 # Optional SQLite backup
 DATABASES["backup"] = {
     "ENGINE": "django.db.backends.sqlite3",
     "NAME": BASE_DIR / "db.sqlite3",
 }
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -162,12 +158,12 @@ load_dotenv()
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 JAZZMIN_SETTINGS = {
-    "site_title": "SEKU NEXORA Admin",  # Browser tab title
-    "site_header": "SEKU NEXORA AI",    # Top-left header
-    "site_brand": "NEXORA AI",          # Branding text in sidebar
-    "site_logo": "assets/seku.jpeg",  # Path to your logo
-    "welcome_sign": "Welcome to SEKU NEXORA AI Admin",
-    "copyright": "SEKU NEXORA ICT & Media Team",
+    "site_title": "Sekusmartcampus Admin",  # Browser tab title
+    "site_header": "Swekusmartcampus ai-bot",    # Top-left header
+    "site_brand": "sekusmartcampus",          # Branding text in sidebar
+    "site_logo": "assets/logo3.png",  # Path to your logo
+    "welcome_sign": "Welcome to SEKUSMARTCAMPUS",
+    "copyright": "Sekusmartcampus",
     "search_model": ["auth.User", "auth.Group"],
     "user_avatar": None,
     "show_sidebar": True,
@@ -179,7 +175,7 @@ JAZZMIN_UI_TWEAKS = {
     "body_small_text": True,
     "brand_colour": "#007F3E",               # SEKU green
     "accent": "#FFD700",                     # Gold/arid accent
-    "navbar": "navbar-dark navbar-success",  # Dark navbar with green
+    "navbar": "FFD700",  # Dark navbar with green
     "sidebar": "sidebar-light-success",      # Light sidebar with green highlights
     "sidebar_nav_compact_style": True,
     "theme": "litera",                       # Keep Bootstrap theme or customize later
