@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>SEKU SmartCampus</title>
+  <link rel="icon" type="image/png" href="{% static 'assets/logo3.png' %}">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- Bootstrap CSS -->
@@ -337,6 +338,11 @@
       and campus services — all in one intelligent system.
     </p>
     <div id="form-error-region" class="visually-hidden red" aria-live="polite"></div>
+    {% if error %}
+    <div class="alert alert-danger text-center">
+      {{ error }}
+    </div>
+  {% endif %}
     <form method="POST" action="/sign-in/" class="login-form" autocomplete="off" id="loginForm">
       {% csrf_token %}
       <div class="mb-3">
